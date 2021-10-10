@@ -19,7 +19,6 @@ int get_option(int type, const char *msg)
 	char *ptr;
 	int result = 0;
 
-	printf("\n");
 	// Displays message
 	printf("%s", msg);
 	if(type != 0)
@@ -160,7 +159,7 @@ void contactMenu(const char *msg){
 	printf("1. Phone Number\n");
 	printf("2. Email Address\n");
 	printf("3. si Number\n");
-	printf("4. Exit");
+	printf("4. Exit\n");
 }
 
 Status add_contacts(AddressBook *address_book)
@@ -202,8 +201,8 @@ Status delete_contact(AddressBook *address_book)
 			case e_fourth_opt:
 				break;
 			case e_fifth_opt:
-				printf("Exiting Delete contact...\n");
-				break;
+				printf("Now exiting delete_contact...");
+				return e_success;
 		}
 
 	}while(option != e_fifth_opt);
