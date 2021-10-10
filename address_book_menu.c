@@ -1,16 +1,19 @@
 #include <stdio.h>
-#include <stdio_ext.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
-#include "abk_fileops.h"
-#include "abk_log.h"
-#include "abk_menus.h"
-#include "abk.h"
+#include "address_book.h"
+#include "address_book_fops.h"
+#include "address_book_menu.h"
+
+extern Status save_file(AddressBook *address_book);
 
 int get_option(int type, const char *msg)
 {
+	char option[10];
+	char *ptr;
+	int result;
 	/*
 	 * Mutilfuction user intractions like
 	 * Just an enter key detection
@@ -19,6 +22,26 @@ int get_option(int type, const char *msg)
 	 */ 
 
 	/* Fill the code to add above functionality */
+
+	// Displays message
+	printf("%s", msg);
+	scanf("%s", option);
+
+	if(type == 2){
+		result = (int)*option;
+		if(result != 'Y' && result != 'N')
+			return get_option(type, msg);
+
+	}else if(type == 1){
+		// Checks if value is of type int
+		result = strtol(option, &ptr, 10);
+		if(*ptr != '\0'){
+			printf("Enter a valid input.\n");
+			return get_option(type, msg);
+		}
+	}else;
+
+	return result;
 }
 
 Status save_prompt(AddressBook *address_book)
@@ -63,7 +86,7 @@ void menu_header(const char *str)
 	system("clear");
 
 	printf("#######  Address Book  #######\n");
-	if (str != '\0')
+	if (*str != '\0')
 	{
 		printf("#######  %s\n", str);
 	}
