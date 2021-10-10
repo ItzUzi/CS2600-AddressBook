@@ -13,7 +13,7 @@ int get_option(int type, const char *msg)
 {
 	char option[10];
 	char *ptr;
-	int result;
+	int result = 0;
 	/*
 	 * Mutilfuction user intractions like
 	 * Just an enter key detection
@@ -25,7 +25,8 @@ int get_option(int type, const char *msg)
 
 	// Displays message
 	printf("%s", msg);
-	scanf("%s", option);
+	if(type != 0)
+		scanf("%s", option);
 
 	if(type == 2){
 		result = (int)*option;
@@ -39,7 +40,7 @@ int get_option(int type, const char *msg)
 			printf("Enter a valid input.\n");
 			return get_option(type, msg);
 		}
-	}else;
+	}
 
 	return result;
 }
