@@ -7,22 +7,19 @@
 #include "address_book_fops.h"
 #include "address_book_menu.h"
 
-extern Status save_file(AddressBook *address_book);
+Status save_file(AddressBook *address_book);
 
+/**
+ * Takes type of return data desired and custom message
+ * Takes user input and returns desired input
+*/
 int get_option(int type, const char *msg)
 {
 	char option[10];
 	char *ptr;
 	int result = 0;
-	/*
-	 * Mutilfuction user intractions like
-	 * Just an enter key detection
-	 * Read an number
-	 * Read a charcter
-	 */ 
 
-	/* Fill the code to add above functionality */
-
+	printf("\n");
 	// Displays message
 	printf("%s", msg);
 	if(type != 0)
@@ -84,7 +81,7 @@ void menu_header(const char *str)
 {
 	fflush(stdout);
 
-	system("clear");
+	system("cls");
 
 	printf("#######  Address Book  #######\n");
 	if (*str != '\0')
@@ -142,8 +139,8 @@ Status menu(AddressBook *address_book)
 				delete_contact(address_book);
 				break;
 			case e_list_contacts:
-				break;
 				/* Add your implementation to call list_contacts function here */
+				break;
 			case e_save:
 				save_file(address_book);
 				break;
@@ -153,6 +150,17 @@ Status menu(AddressBook *address_book)
 	} while (option != e_exit);
 
 	return e_success;
+}
+
+void contactMenu(const char *msg){
+
+	menu_header(msg);
+
+	printf("0. Name\n");
+	printf("1. Phone Number\n");
+	printf("2. Email Address\n");
+	printf("3. si Number\n");
+	printf("4. Exit");
 }
 
 Status add_contacts(AddressBook *address_book)
@@ -177,5 +185,29 @@ Status edit_contact(AddressBook *address_book)
 
 Status delete_contact(AddressBook *address_book)
 {
-	/* Add the functionality for delete contacts here */
+	int option;
+
+	do{
+		contactMenu("Delete by...");
+
+		option = get_option(NUM, "");
+
+		switch(option){
+			case e_first_opt:
+				break;
+			case e_second_opt:
+				break;
+			case e_third_opt:
+				break;
+			case e_fourth_opt:
+				break;
+			case e_fifth_opt:
+				printf("Exiting Delete contact...\n");
+				break;
+		}
+
+	}while(option != e_fifth_opt);
+
+	return e_success;
+
 }
