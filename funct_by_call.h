@@ -28,8 +28,9 @@ static ContactInfo* searchAddressBook(ContactInfo *ptr, int bookSize, const void
 }
 
 static int compareName(const void *targetPtr, ContactInfo *tableValuePtr, int index){
-    printf("CompareName\n");
-    return strcmp((char *) targetPtr, (char *) tableValuePtr -> name[index]);
+    char *val = tableValuePtr -> name[0];
+
+    return strcmp((char *) targetPtr, val);
 }
 
 static int comparePhNum(const void *targetPtr, ContactInfo *tableValuePtr, int index){

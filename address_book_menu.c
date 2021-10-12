@@ -44,7 +44,16 @@ void get_string(const char *type, char result[32]){
 	printf("(Only first 32 chars will be taken)\n");
 	char input[100];
 	scanf("%s", input);
-	strncpy(result, input, 32);
+
+	for(int i = 0;i < 32;i++){
+		if(input[i] == '\0'){
+			break;
+		}
+		else{
+			result[i] = input[i];
+			printf("Loop %d\n", i);
+		}
+	}
 }
 
 Status save_prompt(AddressBook *address_book)
