@@ -6,6 +6,7 @@
 #include "address_book.h"
 #include "address_book_fops.h"
 #include "address_book_menu.h"
+#include "funct_by_call.h"
 
 Status save_file(AddressBook *address_book);
 
@@ -21,15 +22,12 @@ int get_option(int type, const char *msg)
 
 	// Displays message
 	printf("%s", msg);
-	if(type != 0)
+	if(type != NONE)
 		scanf("%s", option);
 
-	if(type == 2){
+	if(type == CHAR){
 		result = (int)*option;
-		if(result != 'Y' && result != 'N')
-			return get_option(type, msg);
-
-	}else if(type == 1){
+	}else if(type == NUM){
 		// Checks if value is of type int
 		result = strtol(option, &ptr, 10);
 		if(*ptr != '\0'){
@@ -39,6 +37,14 @@ int get_option(int type, const char *msg)
 	}
 
 	return result;
+}
+
+void get_string(const char *type, char result[32]){
+	printf("Enter %s\n", type);
+	printf("(Only first 32 chars will be taken)\n");
+	char input[100];
+	scanf("%s", input);
+	strncpy(result, input, 32);
 }
 
 Status save_prompt(AddressBook *address_book)
@@ -80,7 +86,7 @@ void menu_header(const char *str)
 {
 	fflush(stdout);
 
-	system("cls");
+	//system("cls");
 
 	printf("#######  Address Book  #######\n");
 	if (*str != '\0')
@@ -184,8 +190,16 @@ Status edit_contact(AddressBook *address_book)
 
 Status delete_contact(AddressBook *address_book)
 {
-	int option;
+	int option, siNum;
+	char input[32];
+	char *check;
 
+	ContactInfo *matchPtr;
+	FILE *fp = address_book -> fp;
+	int addressBookSize = sizeof(ContactInfo) * address_book->count;
+	printf("Size of contactInfo is %d\n", sizeof(ContactInfo));
+	printf("count of address_book is %d\n", address_book->count);
+	printf("AddressBook size is : %d", addressBookSize);
 	do{
 		contactMenu("Delete by...");
 
@@ -193,17 +207,29 @@ Status delete_contact(AddressBook *address_book)
 
 		switch(option){
 			case e_first_opt:
+				get_string("name",input);
+				matchPtr = searchByName(matchPtr, addressBookSize, input);
 				break;
 			case e_second_opt:
+				get_string("phone number", input);
+				check = strtok(input, '\0');
+				matchPtr = searchByPhNum(matchPtr, addressBookSize, check);
 				break;
 			case e_third_opt:
+				get_string("email address", input);
 				break;
 			case e_fourth_opt:
+				siNum = get_option(NUM, "Enter serial number\n");
 				break;
 			case e_fifth_opt:
 				printf("Now exiting delete_contact...");
 				return e_success;
 		}
+
+		if(matchPtr != NULL){
+			printf("Succeeded");
+		}else
+			printf("failed");
 
 	}while(option != e_fifth_opt);
 
