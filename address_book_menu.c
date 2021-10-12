@@ -71,49 +71,36 @@ Status save_prompt(AddressBook *address_book)
 
 Status list_contacts(AddressBook *address_book, const char *title, int *index, const char *msg, Modes mode)
 {
-	//needs to cycle through the whole address book, printing the name and cycle-printing phone numbers and emails
-	//print message
+	for (int i=0; i<address_book->count;i++)
+    {
+        printf("Name: ");
+        printf("%s", address_book->list[i].name);
 
-	AddressBook deAl = *address_book;
-	ContactInfo innerList[] = *address_book->list;
-	get_option(5, "N for next page, P for previous page, Q to quit...");
-	
-	for (int i =0; i<deAl.count-1; i++)
-	{
-		ContactInfo currentContact = innerList[i];
+        printf("\nPhone Numbers: \n");
+        for(int j=0; j<PHONE_NUMBER_COUNT; j++)
+        {
+            if (strcmp(address_book->list[i].phone_numbers[j], "\0")==0 || (int)*address_book->list[i].phone_numbers[j]>=57 && (int)*address_book->list[i].phone_numbers[j]<= 48)
+            {
+                continue;
+            }else{
+                printf("\t%s\n", address_book->list[i].phone_numbers[j]);
+            }
+        }
 
-		//print contact name
-		printf("Name: %s", currentContact.name);
-		//print phone #'s
-		printf("Phone Number(s):\n");
-		for (int j=0; j<4; j++)
-		{
-			printf("\t%s\n", currentContact.phone_numbers[j]);
-		}
-		//print email addresses
-		printf("Email Address(s):\n");
-		for (int k=0; k<4; k++)
-		{
-			printf("\t%s\n", currentContact.email_addresses[k]);
-		}
-		//print si_no
-		printf("%s's si_no: %i\n", currentContact.name, currentContact.si_no);
+        printf("\nEmail Addresses: \n");
+        for(int k=0; k<EMAIL_ID_COUNT; k++)
+        {
+            if (strcmp(address_book->list[i].email_addresses[k], "\0")==0)
+            {
+                continue;
+            }else{
+                printf("\t%s\n", address_book->list[i].email_addresses[k]);
+            }
+        }
 
+        printf("\nsi_no: %i\n\n", address_book->list[i].si_no);
 
-		//evaluate choices
-		if (strcmp(get_option, 'Y') == 0)
-		{
-			return e_new_line;
-		}
-		if (strcmp(get_option, 'N') == 0)
-		{
-			return e_back;
-		}
-		if (strcmp(get_option, 'Q') == 0)
-		{
-			break;
-		}
-	}
+    }
 
 	return e_success;
 }
