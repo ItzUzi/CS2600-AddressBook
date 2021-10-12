@@ -13,15 +13,16 @@ static ContactInfo* searchAddressBook(ContactInfo *ptr, int bookSize, const void
     int counter = 0;
     printf("SearchAddressBook\n");
     ContactInfo *endPtr = ptr + bookSize;
-    for(; ptr < endPtr; ptr++)
+    for(; ptr < endPtr; ptr++){
         printf("ptr: %s\n",ptr);
+        printf("target: %s\n", targetPtr);
 
         if(counter < (sizeof(ptr->name)/sizeof(ptr->name[0])))
             counter ++;
 
-        if((*functionPtr)(targetPtr, ptr, counter) == 0){
+        if((*functionPtr)(targetPtr, ptr, counter) == 0)
             return (ContactInfo*) ptr;
-        }
+    }
     return NULL;
 
 }

@@ -194,8 +194,8 @@ Status delete_contact(AddressBook *address_book)
 	char input[32];
 	char *check;
 
-	ContactInfo *matchPtr;
-	FILE *fp = address_book -> fp;
+	ContactInfo *matchPtr = address_book->list;
+	// FILE *fp = address_book -> fp;
 	int addressBookSize = sizeof(ContactInfo) * address_book->count;
 	printf("Size of contactInfo is %d\n", sizeof(ContactInfo));
 	printf("count of address_book is %d\n", address_book->count);
