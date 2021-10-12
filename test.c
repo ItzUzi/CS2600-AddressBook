@@ -42,6 +42,7 @@ void main()
 
     //Print out size of an array (WORKS);
     printf("Size: %i\n", sizeof(tBook->list[0].phone_numbers)/NUMBER_LEN);
+    
 
 
     printf("\n");
@@ -51,32 +52,31 @@ void main()
     for (int i=0; i<tBook->count;i++)
     {
         printf("Name: ");
-        printf("%s\n", tBook->list[i].name);
+        printf("%s", tBook->list[i].name);
 
-        printf("Phone Numbers: \n");
+        printf("\nPhone Numbers: \n");
         for(int j=0; j<PHONE_NUMBER_COUNT; j++)
         {
             if (strcmp(tBook->list[i].phone_numbers[j], "\0")==0 || (int)*tBook->list[i].phone_numbers[j]>=57 && (int)*tBook->list[i].phone_numbers[j]<= 48)
             {
                 continue;
             }else{
-                printf("%s\n", tBook->list[i].phone_numbers[j]);
+                printf("\t%s\n", tBook->list[i].phone_numbers[j]);
             }
         }
 
-        printf("Email Addresses: \n");
+        printf("\nEmail Addresses: \n");
         for(int k=0; k<EMAIL_ID_COUNT; k++)
         {
             if (strcmp(tBook->list[i].email_addresses[k], "\0")==0)
             {
                 continue;
             }else{
-                printf("%s\n", tBook->list[i].email_addresses[k]);
+                printf("\t%s\n", tBook->list[i].email_addresses[k]);
             }
         }
 
-        printf("si_no: %i\n\n", tBook->list[i].si_no);
+        printf("\nsi_no: %i\n\n", tBook->list[i].si_no);
 
     }
-
 }
