@@ -177,9 +177,21 @@ Status add_contacts(AddressBook *address_book)
 	/* Add the functionality for adding contacts here */
 }
 
+/**
+ * Should search for values within contacts to confirm whether contact was found or not
+ * Returns whether program was successful or not
+ * loop_count is the count in Address_book
+*/
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
-{
-	/* Add the functionality for adding contacts here */
+{	
+	// Could be like, searching for __
+	printf("%s\n", msg);
+
+	ContactInfo *ptr = address_book->list;
+	ContactInfo *array;
+	for(int i = 0; i < loop_count; i++){
+		ptr[i];
+	}
 }
 
 Status search_contact(AddressBook *address_book)
@@ -197,11 +209,13 @@ Status delete_contact(AddressBook *address_book)
 	int option, siNum;
 	char input[32];
 	char *check;
+	int location = 0;
 
 	// FILE *fp = address_book -> fp;
 	int addressBookSize = sizeof(ContactInfo) * address_book->count;
 	do{
 		contactMenu("Delete by...");
+
 
 		option = get_option(NUM, "");
 		ContactInfo *matchPtr = address_book->list;
@@ -209,7 +223,7 @@ Status delete_contact(AddressBook *address_book)
 		switch(option){
 			case e_first_opt:
 				get_string("name",input);
-				matchPtr = searchByName(matchPtr, addressBookSize, input);
+				matchPtr = searchByName(&matchPtr[location], addressBookSize, input);
 				break;
 			case e_second_opt:
 				get_string("phone number", input);
@@ -227,6 +241,8 @@ Status delete_contact(AddressBook *address_book)
 				printf("Now exiting delete_contact...");
 				return e_success;
 		}
+
+		location++;
 
 		if(matchPtr != NULL) // If found, reinitialize list with count decremented and index of list deleted.
 			printf("Success\n");
