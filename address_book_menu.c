@@ -174,7 +174,23 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 
 Status search_contact(AddressBook *address_book)
 {
-	/* Add the functionality for search contacts here */
+	FILE *fptr;
+	if((fptr = fopen(fptr, "r"))== NULL)
+	{
+		FILE_ERROR(fptr);
+		exit(4);
+	}
+
+	printf("Enter an option to search by\n1.) Search by name\n2.)Search by Phone number\n3.)Search by Email ID\n4.)Search by Serial Number");
+	int option; 
+	scanf("%d", &option);
+	int count = 0;
+	switch(option)
+	{
+		case 1:
+			printf("Enter a Name to search: ");
+			
+	}
 }
 
 Status edit_contact(AddressBook *address_book)
