@@ -11,29 +11,17 @@ extern Status save_file(AddressBook *address_book);
 
 int edit_contact(AddressBook *address_book)
 {
-	/*
-    //open file in read mode
-	FILE *tfp, *sfp;
-    tfp = fopen(address_book->fp, "r+");
-    sfp=fopen("temp.txt","w");
-
-	if(tfp = NULL)
-    {
-    	FILE_ERROR(DEFAULT_FILE);    //if can't open file
-        exit(0);
-    }
-    */
-
-    char nameE[NAME_LEN];
-	char phoneE[NUMBER_LEN];
-	char emailE[EMAIL_ID_LEN];
+    char *nameE;
+	char *phoneE[NUMBER_LEN];
+	char *emailE[EMAIL_ID_LEN];
 	int snE;
+    int indexE;
     int exit = -1;
+    int option;
+    
+    /*search_contact(address_book);*/
 
-    search_contact(address_book);
-    printf("\nPress: [s] = Select, [q] | Cancel: ");
-    char select;
-    scanf("%c", &select);
+    char select = get_option(CHAR,"\nPress: [s] = Select, [q] | Cancel: ");
 
     // review user input for next step
     if ( select == 'q' )
@@ -41,67 +29,82 @@ int edit_contact(AddressBook *address_book)
     else if ( select != 's' )
         return e_no_match;
 
-    printf("Select a Serial Number (S.No) to Edit: ");
-    sacnf("%d", &snE);
+    snE = get_option(NUM,"Select a Serial Number (S.No) to Edit: ");
 
-    /*
-    while(fscanf(tfp,"%s", address_book->list->si_no)!=EOF)
-    {
-        if(strcmp(snE,address_book->list->si_no)==0)
-        {
-            int *p = (int *) address_book->list->si_no;
-        }
-    }
-    */
-
+    
+    int addressBookSize = sizeof(ContactInfo) * address_book->count;
+    ContactInfo *matchPtr = address_book->list;
+    matchPtr = searchBySiNum(matchPtr, addressBookSize, snE);
+    
     do{
         menu_header("Edit Contact:");
 	    printf("\n");
         printf("0. Back\n");
-	    printf("1. Name       : %s\n",address_book->list->name);
-	    printf("2. Phone No %d : %s\n", 1, address_book->list->phone_numbers[0]);
+	    printf("1. Name       : %s\n", matchPtr->name[0]);
+	    printf("2. Phone No %d : %s\n", 1, matchPtr->phone_numbers[0]);
         int i = 1;
-        while (address_book->list->phone_numbers[i] != NULL && i < PHONE_NUMBER_COUNT){
-	        printf("            %d : %s\n", (i+1), address_book->list->phone_numbers[i]);
+        while (matchPtr->phone_numbers[i] != NULL && i < PHONE_NUMBER_COUNT){
+	        printf("            %d : %s\n", (i+1), matchPtr->phone_numbers[i]);
             i++;
         }
-	    printf("3. Email ID %d : %s\n", 1, address_book->list->email_addresses[0]);
-        while (address_book->list->email_addresses[i] != NULL && i < EMAIL_ID_COUNT){
-	        printf("            %d : %s\n", (i+1), address_book->list->email_addresses[i]);
+	    printf("3. Email ID %d : %s\n", 1, matchPtr->email_addresses[0]);
+        while (matchPtr->email_addresses[i] != NULL && i < EMAIL_ID_COUNT){
+	        printf("            %d : %s\n", (i+1), matchPtr->email_addresses[i]);
             i++;
         }
-	    printf("\n");
-	    printf("Please select an option: "); 
-        int option;
-        option = get_option(NUM, "");
 
-        int n = 0;
+        option = get_option(NUM, "\nPlease select an option: ");
+
+        
         switch (option){
             case e_first_opt:
                 exit = 0;
             case e_second_opt:
                 printf("Enter Name: [Just enter removes the entry]: ");
                 scanf("%s", nameE);
-                // reset name
+                strcpy(matchPtr->name[0], nameE);
             case e_third_opt:
-                while (!(n<=5 || n>=1)){
+                while (!(indexE<=5 || indexE>=1)){
                     printf("Enter Phone Number index to be change [Max 5]: ");
-                    scanf("%d", &n);
+                    scanf("%d", &indexE);
                 }
-                printf("Enter Phone Number %d: [Just enter removes the entry]: ", n);
-                sanf("%s", phoneE[n]);
-                // reset phone n
+                printf("Enter Phone Number %d: [Just enter removes the entry]: ", indexE);
+                scanf("%s", phoneE[indexE]);
+                strcpy(matchPtr->phone_numbers[indexE], phoneE[indexE]);
             case e_fourth_opt:
-                while (!(n<=5 || n>=1)){
+                while (!(indexE<=5 || indexE>=1)){
                     printf("Enter Email Address index to be change [Max 5]: ");
-                    scanf("%d", &n);
+                    scanf("%d", &indexE);
                 }
-                printf("Enter Email Address %d: [Just enter removes the entry]: ", n);
-                sanf("%s", emailE[n]);
-                // reset email n
+                printf("Enter Email Address %d: [Just enter removes the entry]: ", indexE);
+                scanf("%s", emailE[indexE]);
+                strcpy(matchPtr->email_addresses[indexE], emailE[indexE]);
         }
 
-    } (exit != 0);
+    } while (exit != 0);
 
 	return e_success;
+
+}
+
+static ContactInfo* searchAddressBook(ContactInfo *ptr, int bookSize, const void *targetPtr, int limit, int (*functionPtr)(const void *, ContactInfo*, int)){
+
+
+    int counter = 0;
+    do{
+        if((*functionPtr)(targetPtr, ptr, counter) == 0)
+            return (ContactInfo*) ptr;
+        else
+            counter++;
+    }while(counter < limit);
+     return NULL;
+
+ }
+
+static int compareSiNum(const void *targetPtr, ContactInfo *tableValuePtr, int index){
+    return * (int *) targetPtr != tableValuePtr ->si_no;
+}
+
+ContactInfo* searchBySiNum(ContactInfo *ptr, int size, int siNum){
+    return searchAddressBook(ptr, size, &siNum, 0, compareSiNum);
 }
