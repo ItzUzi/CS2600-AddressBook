@@ -188,6 +188,7 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 	printf("%s\n", msg);
 
 	ContactInfo *ptr = address_book->list;
+	// To store all similar contact Info ie: if searching by name then all contacts that have the same name
 	ContactInfo *array;
 	for(int i = 0; i < loop_count; i++){
 		ptr[i];
