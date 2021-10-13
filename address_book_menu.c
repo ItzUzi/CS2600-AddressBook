@@ -16,7 +16,7 @@ Status save_file(AddressBook *address_book);
 */
 int get_option(int type, const char *msg)
 {
-	char option[10];
+	char option[32];
 	char *ptr;
 	int result = 0;
 
@@ -46,14 +46,9 @@ void get_string(const char *type, char result[32]){
 	scanf("%s", input);
 
 	for(int i = 0;i < 32;i++){
-		if(input[i] == '\0'){
-			break;
-		}
-		else{
-			result[i] = input[i];
-			printf("Loop %d\n", i);
-		}
+		result[i] = input[i];
 	}
+	
 }
 
 Status save_prompt(AddressBook *address_book)
@@ -203,17 +198,14 @@ Status delete_contact(AddressBook *address_book)
 	char input[32];
 	char *check;
 
-	ContactInfo *matchPtr = address_book->list;
 	// FILE *fp = address_book -> fp;
 	int addressBookSize = sizeof(ContactInfo) * address_book->count;
-	printf("Size of contactInfo is %d\n", sizeof(ContactInfo));
-	printf("count of address_book is %d\n", address_book->count);
-	printf("AddressBook size is : %d", addressBookSize);
 	do{
 		contactMenu("Delete by...");
 
 		option = get_option(NUM, "");
-
+		ContactInfo *matchPtr = address_book->list;
+		
 		switch(option){
 			case e_first_opt:
 				get_string("name",input);
@@ -221,25 +213,25 @@ Status delete_contact(AddressBook *address_book)
 				break;
 			case e_second_opt:
 				get_string("phone number", input);
-				check = strtok(input, '\0');
-				matchPtr = searchByPhNum(matchPtr, addressBookSize, check);
+				matchPtr = searchByPhNum(matchPtr, addressBookSize, input);
 				break;
 			case e_third_opt:
 				get_string("email address", input);
+				matchPtr = searchByEmail(matchPtr, addressBookSize, input);
 				break;
 			case e_fourth_opt:
 				siNum = get_option(NUM, "Enter serial number\n");
+				matchPtr = searchBySiNum(matchPtr, addressBookSize, siNum);
 				break;
 			case e_fifth_opt:
 				printf("Now exiting delete_contact...");
 				return e_success;
 		}
 
-		if(matchPtr != NULL){
-			printf("Succeeded");
-		}else
-			printf("failed");
-
+		if(matchPtr != NULL) // If found, reinitialize list with count decremented and index of list deleted.
+			printf("Success\n");
+		else
+			printf("Could not find\n");
 	}while(option != e_fifth_opt);
 
 	return e_success;

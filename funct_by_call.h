@@ -8,40 +8,51 @@
 #include "address_book.h"
 
 static ContactInfo* searchAddressBook(ContactInfo *ptr, int bookSize, const void *targetPtr,
-                            int (*functionPtr)(const void *, ContactInfo*, int)){
+                            int limit, int (*functionPtr)(const void *, ContactInfo*, int)){
     
     int counter = 0;
-    printf("SearchAddressBook\n");
-    ContactInfo *endPtr = ptr + bookSize;
-    for(; ptr < endPtr; ptr++){
-        printf("ptr: %s\n",ptr);
-        printf("target: %s\n", targetPtr);
-
-        if(counter < (sizeof(ptr->name)/sizeof(ptr->name[0])))
-            counter ++;
-
+    do{
         if((*functionPtr)(targetPtr, ptr, counter) == 0)
             return (ContactInfo*) ptr;
+        else
+            counter++;
     }
+    while(counter < limit);
     return NULL;
 
 }
 
 static int compareName(const void *targetPtr, ContactInfo *tableValuePtr, int index){
-    char *val = tableValuePtr -> name[0];
-
-    return strcmp((char *) targetPtr, val);
+    return strcmp((char *) targetPtr, (char*)tableValuePtr->name[0]);
 }
 
 static int comparePhNum(const void *targetPtr, ContactInfo *tableValuePtr, int index){
-    return strcmp((char *) targetPtr, (char *) tableValuePtr -> phone_numbers[index]);
+    return strcmp((char *) targetPtr, (char *)tableValuePtr->phone_numbers[index]);
+}
+
+static int compareEmail(const void *targetPtr, ContactInfo *tableValuePtr, int index){
+    return strcmp((char *) targetPtr, (char *) tableValuePtr->email_addresses[index]);
+}
+
+static int compareSiNum(const void *targetPtr, ContactInfo *tableValuePtr, int index){
+    return * (int *) targetPtr != tableValuePtr ->si_no;
 }
 
 ContactInfo* searchByName(ContactInfo *ptr, int size, char *name){
-    printf("\nLooking for %s\n", name);
-    return searchAddressBook(ptr, size, name, compareName);
+    int limit = sizeof(ptr->name)/sizeof(ptr->name[0]);
+    return searchAddressBook(ptr, size, name, limit, compareName);
 }
 
 ContactInfo* searchByPhNum(ContactInfo *ptr, int size, char *phoneNum){
-    return searchAddressBook(ptr, size, phoneNum, comparePhNum);
+    int limit = (sizeof(ptr->phone_numbers) / sizeof(ptr->phone_numbers[0]));
+    return searchAddressBook(ptr, size, phoneNum, limit, comparePhNum);
+}
+
+ContactInfo* searchByEmail(ContactInfo *ptr, int size, char *emailAddress){
+    int limit = (sizeof(ptr->email_addresses) / sizeof(ptr->email_addresses[0]));
+    return searchAddressBook(ptr, size, emailAddress, limit, compareEmail);
+}
+
+ContactInfo* searchBySiNum(ContactInfo *ptr, int size, int siNum){
+    return searchAddressBook(ptr, size, &siNum, 0, compareSiNum);
 }
