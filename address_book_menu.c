@@ -227,47 +227,44 @@ Status edit_contact(AddressBook *address_book)
 
 Status delete_contact(AddressBook *address_book)
 {
-	int option, siNum;
+	int option, size, *counter, index;
 	char input[32];
-	char *check;
-	int loopCounter = address_book->count;
-	int counter = 0;
+	int serialNum;
+	ContactInfo *matchPtr = address_book->list;
+	size = sizeof(ContactInfo) * address_book->count;
+	index = 0;
+	contactMenu("Delete by...");
+	option = get_option(NUM, "");
 
-	// FILE *fp = address_book -> fp;
-	int addressBookSize = sizeof(ContactInfo) * address_book->count;
-	do{
-		option = get_option(NUM, "");
-		contactMenu("Delete by...");
-		ContactInfo *matchPtr = address_book->list;
-
-		for(int location = 0; location < loopCounter; location++){
-			switch(option){
-				case e_first_opt:
-					get_string("name",input);
-					matchPtr = searchByName(&matchPtr[location], addressBookSize, input);
-					break;
-				case e_second_opt:
-					get_string("phone number", input);
-					matchPtr = searchByPhNum(matchPtr, addressBookSize, input);
-					break;
-				case e_third_opt:
-					get_string("email address", input);
-					matchPtr = searchByEmail(matchPtr, addressBookSize, input);
-					break;
-				case e_fourth_opt:
-					siNum = get_option(NUM, "Enter serial number\n");
-					matchPtr = searchBySiNum(matchPtr, addressBookSize, siNum);
-					break;
-				case e_fifth_opt:
-					printf("Now exiting delete_contact...\n");
-					return e_success;
-			}
+	switch (option)
+	{
+	case e_first_opt:
+		get_string("name", input);
+		for(int i = 0;i < address_book->count;i++){
+			matchPtr = searchByName(&matchPtr[i], size, input);
+			if(matchPtr != NULL){
+				counter[index] = i;
+				index++;
+			}else
+				continue;
 		}
-		if(matchPtr != NULL) // If found, reinitialize list with count decremented and index of list deleted.
-			printf("Success\n");
-		else
-			printf("Could not find\n");
-	}while(option != e_fifth_opt);
+		break;
+	case e_second_opt:
+		get_string("phone number", input);
+		matchPtr = searchByPhNum(matchPtr, size, input);
+		break;
+	case e_third_opt:
+		get_string("email address", input);
+		matchPtr = searchByEmail(matchPtr, size, input);
+		break;
+	case e_fourth_opt:
+		serialNum = get_option(NUM, "Enter serial number to look for: ");
+		matchPtr = searchBySiNum(matchPtr, size, serialNum);
+		break;
+	case e_fifth_opt:
+		printf("Now exiting delete_contact...\n");
+		break;
+	}
 
 	return e_success;
 
