@@ -136,7 +136,7 @@ Status menu(AddressBook *address_book)
 		switch (option)
 		{
 			case e_add_contact:
-				/* Add your implementation to call add_contacts function here */
+				add_contacts(address_book);
 				break;
 			case e_search_contact:
 				search_contact(address_book);
@@ -210,18 +210,19 @@ Status add_contacts(AddressBook *address_book)
 				printf("Enter the name:\n");
 				scanf("%s", matchPtr->name[0]);
 			case e_third_opt:
-				print("Enter Phone Number 1:\n");
+				print("Enter Phone Number %d:\n", i);
 				scanf("%s", matchPtr->phone_numbers[0]);
 			case e_fourth_opt:
-				print("Enter Email ID 1:\n");
+				print("Enter Email ID %d:\n", i);
 				scanf("%s", matchPtr->email_addresses[0]);
 		}
 
 
 
 	} while (exit != 0);
-	
 
+	return e_success;
+	
 }
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
