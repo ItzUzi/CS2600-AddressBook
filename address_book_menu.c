@@ -35,7 +35,7 @@ int get_option(int type, const char *msg)
 			return get_option(type, msg);
 		}
 	}
-
+	system("cls");
 	return result;
 }
 
@@ -48,7 +48,8 @@ void get_string(const char *type, char result[32]){
 	for(int i = 0;i < 32;i++){
 		result[i] = input[i];
 	}
-	
+
+	system("cls");
 }
 
 Status save_prompt(AddressBook *address_book)
@@ -186,12 +187,31 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 {	
 	// Could be like, searching for __
 	printf("%s\n", msg);
-
+	int counter = 0;
 	ContactInfo *ptr = address_book->list;
 	// To store all similar contact Info ie: if searching by name then all contacts that have the same name
 	ContactInfo *array;
 	for(int i = 0; i < loop_count; i++){
-		ptr[i];
+		if(*ptr[i].name == str){
+			array[counter] = ptr[loop_count];
+			counter++;
+		}
+	}
+
+	switch (mode)
+	{
+	case e_add:
+		break;
+	case e_search:
+		break;
+	case e_edit:
+		break;
+	case e_delete:
+		break;
+	case e_list:
+		break;
+	default:
+		return e_fail;
 	}
 }
 
@@ -210,41 +230,39 @@ Status delete_contact(AddressBook *address_book)
 	int option, siNum;
 	char input[32];
 	char *check;
-	int location = 0;
+	int loopCounter = address_book->count;
+	int counter = 0;
 
 	// FILE *fp = address_book -> fp;
 	int addressBookSize = sizeof(ContactInfo) * address_book->count;
 	do{
-		contactMenu("Delete by...");
-
-
 		option = get_option(NUM, "");
+		contactMenu("Delete by...");
 		ContactInfo *matchPtr = address_book->list;
-		
-		switch(option){
-			case e_first_opt:
-				get_string("name",input);
-				matchPtr = searchByName(&matchPtr[location], addressBookSize, input);
-				break;
-			case e_second_opt:
-				get_string("phone number", input);
-				matchPtr = searchByPhNum(matchPtr, addressBookSize, input);
-				break;
-			case e_third_opt:
-				get_string("email address", input);
-				matchPtr = searchByEmail(matchPtr, addressBookSize, input);
-				break;
-			case e_fourth_opt:
-				siNum = get_option(NUM, "Enter serial number\n");
-				matchPtr = searchBySiNum(matchPtr, addressBookSize, siNum);
-				break;
-			case e_fifth_opt:
-				printf("Now exiting delete_contact...");
-				return e_success;
+
+		for(int location = 0; location < loopCounter; location++){
+			switch(option){
+				case e_first_opt:
+					get_string("name",input);
+					matchPtr = searchByName(&matchPtr[location], addressBookSize, input);
+					break;
+				case e_second_opt:
+					get_string("phone number", input);
+					matchPtr = searchByPhNum(matchPtr, addressBookSize, input);
+					break;
+				case e_third_opt:
+					get_string("email address", input);
+					matchPtr = searchByEmail(matchPtr, addressBookSize, input);
+					break;
+				case e_fourth_opt:
+					siNum = get_option(NUM, "Enter serial number\n");
+					matchPtr = searchBySiNum(matchPtr, addressBookSize, siNum);
+					break;
+				case e_fifth_opt:
+					printf("Now exiting delete_contact...\n");
+					return e_success;
+			}
 		}
-
-		location++;
-
 		if(matchPtr != NULL) // If found, reinitialize list with count decremented and index of list deleted.
 			printf("Success\n");
 		else

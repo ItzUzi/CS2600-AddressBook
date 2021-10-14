@@ -11,7 +11,7 @@ int main(int argc, char const *argv[])
     AddressBook addBook;
 
     int size = addBook.count;
-    ContactInfo contArray[size];
+    ContactInfo contArray[size + 1];
     addBook.list = contArray;
 
     ContactInfo ptr;
@@ -21,13 +21,11 @@ int main(int argc, char const *argv[])
     strcpy(addBook.list[0].phone_numbers[0], "3235561034");
     strcpy(addBook.list[0].phone_numbers[1], "3234480109");
     addBook.list[0].si_no = 323;
-    printf("phone num is: %s", addBook.list[0].phone_numbers[0]);
-    printf("%d", sizeof(addBook.list[0].name[0]));
-
-    Status delete_contact(AddressBook *address_book);
+    strcpy(addBook.list[1].name[0], "Iggy");
+    Status menu(AddressBook *address_book);
 
 
-    int result = delete_contact(&addBook);
+    int result = menu(&addBook);
 
     return 0;
 }
