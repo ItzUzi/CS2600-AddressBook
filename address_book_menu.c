@@ -101,6 +101,7 @@ void menu_header(const char *str)
 
 void main_menu(void)
 {
+	system("cls");
 	menu_header("Features:\n");
 
 	printf("0. Exit\n");
@@ -177,21 +178,21 @@ void static printPHandEMAIL(AddressBook *address_book, int index){
 	int counter = 0;
 	int check;
 	char str[32];
-	printf("PhoneNumbers:      \n");
+	printf("PhoneNumbers:\n");
 	while(counter < PHONE_NUMBER_COUNT){
 		check = strcmp(ptr[index].phone_numbers[counter], "");
 		if(check != 0)
-			printf("              %s\n", ptr[index].phone_numbers[counter]);
+			printf("                 %s\n", ptr[index].phone_numbers[counter]);
 		else
 			break;
 		counter++;
 	}
 	counter = 0;
-	printf("Email Addresses:   \n");
+	printf("Email Addresses:\n");
 	while(counter < EMAIL_ID_COUNT){
 		check = strcmp(ptr[index].email_addresses[counter], "");
 		if(check != 0)
-			printf("              %s\n", ptr[index].email_addresses[counter]);
+			printf("                 %s\n", ptr[index].email_addresses[counter]);
 		else
 			break;
 		counter++;
@@ -374,13 +375,12 @@ void excludeContact(AddressBook *address_book, int index){
 
 Status delete_contact(AddressBook *address_book)
 {
+	system("cls");
 	int option, siNum;
 	int size = address_book->count;
 	char input[32];
 	char *check;
 	int indexArray[address_book->count];
-
-	// FILE *fp = address_book -> fp;
 	int addressBookSize = sizeof(ContactInfo) * size;
 
 		contactMenu("Delete by...");
@@ -388,6 +388,7 @@ Status delete_contact(AddressBook *address_book)
 		option = get_option(NUM, "");
 		ContactInfo *matchPtr = address_book->list;
 		
+		system("cls");
 		switch(option){
 			case e_first_opt:
 				get_string("name",input);
@@ -412,9 +413,7 @@ Status delete_contact(AddressBook *address_book)
 			switch (option)
 			{
 				case e_first_opt:
-					printf("matchPointer is at: %s\n", matchPtr[index]);
 					matchPtr = searchByName(&matchPtr[index], addressBookSize, input);
-					printf("Line 341\n");
 					break;
 				case e_second_opt:
 					matchPtr = searchByPhNum(&matchPtr[index], addressBookSize, input);
@@ -428,8 +427,6 @@ Status delete_contact(AddressBook *address_book)
 				default:
 					break;
 			}
-
-			printf("Line 356\n");
 
 			if(matchPtr != NULL){
 				indexArray[counter] = index;
