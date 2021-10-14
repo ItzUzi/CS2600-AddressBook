@@ -17,6 +17,13 @@ int main(int argc, char const *argv[])
     ContactInfo ptr;
     char name[32];
 
+
+    for(int j = 0; j < 3; j++)
+        for(int i = 0; i < PHONE_NUMBER_COUNT; i++){
+            strcpy(addBook.list[j].phone_numbers[i], "");
+            strcpy(addBook.list[j].email_addresses[i], "");
+        }
+
     strcpy(addBook.list[0].name[0], "Uzi");
     strcpy(addBook.list[0].phone_numbers[0], "3235561034");
     strcpy(addBook.list[0].phone_numbers[1], "1312331231");
