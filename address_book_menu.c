@@ -217,6 +217,25 @@ Status search_contact(AddressBook *address_book)
 				}
 				break;
 			case e_second_opt:
+				printf("Enter a phone number to search: ");
+				scanf("%s", phoneE);
+				while (fread(&address_book, sizeof(address_book), 1, fptr) == 1)
+				{
+					if(!strcmp(phoneE, &address_book))
+					{
+						printf("contact FOUND\nName    : %s\nPhone No: %s\nEmail Id: %s\n", nameE, &phoneE , &emailE);
+						counter++;
+					}
+				}
+				if (!counter)
+				{
+					printf("Contanct not found\n");
+					return -2;
+				}
+				else if (counter > 1)
+				{
+					printf("WARNING: contacts with either same NAME, PHONE NUMBER, or EMAIL ID found\n");
+				}
 				break;
 			case e_third_opt:
 				break;
