@@ -175,6 +175,7 @@ void contactMenu(const char *msg){
 Status add_contacts(AddressBook *address_book)
 {
 	int exit = -1;
+	int i = 1;
 	
 	int addressBookSize = sizeof(ContactInfo) * address_book->count;
     ContactInfo *matchPtr = address_book->list;
@@ -184,9 +185,19 @@ Status add_contacts(AddressBook *address_book)
 		menu_header("Add Contact");
 		printf("\n");
 		printf("0. Back\n");
-		printf("1. Name      :\n");
-		printf("2. Phone No 1 :\n");
-		printf("3. Email ID 1 :\n");
+		printf("1. Name      :%s\n", matchPtr->name[0]);
+		printf("2. Phone No %d :%s\n", 1, matchPtr->phone_numbers[0]);
+		while (matchPtr->phone_numbers[i] != NULL && i < PHONE_NUMBER_COUNT)
+		{
+	        printf("            %d : %s\n", (i+1), matchPtr->phone_numbers[i]);
+            i++;
+		}
+		printf("3. Email ID %d :%s\n", 1, matchPtr->email_addresses[0]);
+		while (matchPtr->email_addresses[i] != NULL && i < EMAIL_ID_COUNT)
+		{
+	        printf("            %d : %s\n", (i+1), matchPtr->email_addresses[i]);
+            i++;
+        }
 		
 		int option = get_option(NUM, "Please select an option:\n");
 		scanf("%d", option);
