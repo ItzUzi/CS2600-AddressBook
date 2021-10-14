@@ -35,7 +35,7 @@ int get_option(int type, const char *msg)
 			return get_option(type, msg);
 		}
 	}
-	system("cls");
+
 	return result;
 }
 
@@ -48,8 +48,7 @@ void get_string(const char *type, char result[32]){
 	for(int i = 0;i < 32;i++){
 		result[i] = input[i];
 	}
-
-	system("cls");
+	
 }
 
 Status save_prompt(AddressBook *address_book)
@@ -173,46 +172,31 @@ void contactMenu(const char *msg){
 	printf("4. Exit\n");
 }
 
+void printContact(AddressBook *address_book, int *indexes, int size){
+	printf("size is: %d\n", size);
+	int index;
+	ContactInfo *ptr = address_book->list;
+	for(int i = 0; i < size; i++){
+		index = indexes[i];
+		printf("**********************************\n");
+		printf("Name:            %s\n", ptr[index].name);
+		printf("PhoneNumbers:    %s\n", ptr[index].phone_numbers[0]);
+		printf("                 %s\n", ptr[index].phone_numbers[1]);
+		printf("Email Addresses: %s\n", ptr[index].email_addresses[0]);
+		printf("                 %s\n", ptr[index].email_addresses[1]);
+		printf("Serial Number:   %d\n", ptr[index].si_no);
+		printf("**********************************\n");
+	}
+}
+
 Status add_contacts(AddressBook *address_book)
 {
 	/* Add the functionality for adding contacts here */
 }
 
-/**
- * Should search for values within contacts to confirm whether contact was found or not
- * Returns whether program was successful or not
- * loop_count is the count in Address_book
-*/
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
-{	
-	// Could be like, searching for __
-	printf("%s\n", msg);
-	int counter = 0;
-	ContactInfo *ptr = address_book->list;
-	// To store all similar contact Info ie: if searching by name then all contacts that have the same name
-	ContactInfo *array;
-	for(int i = 0; i < loop_count; i++){
-		if(*ptr[i].name == str){
-			array[counter] = ptr[loop_count];
-			counter++;
-		}
-	}
-
-	switch (mode)
-	{
-	case e_add:
-		break;
-	case e_search:
-		break;
-	case e_edit:
-		break;
-	case e_delete:
-		break;
-	case e_list:
-		break;
-	default:
-		return e_fail;
-	}
+{
+	/* Add the functionality for adding contacts here */
 }
 
 Status search_contact(AddressBook *address_book)
@@ -222,49 +206,151 @@ Status search_contact(AddressBook *address_book)
 
 Status edit_contact(AddressBook *address_book)
 {
-	/* Add the functionality for edit contacts here */
+    char *nameE;
+	char *phoneE[NUMBER_LEN];
+	char *emailE[EMAIL_ID_LEN];
+	int snE;
+    int indexE;
+    int exit = -1;
+    int option;
+    
+    /*search_contact(address_book);*/
+
+    char select = get_option(CHAR,"\nPress: [s] = Select, [q] | Cancel: ");
+
+    // review user input for next step
+    if ( select == 'q' )
+        return e_back;
+    else if ( select != 's' )
+        return e_no_match;
+
+    snE = get_option(NUM,"Select a Serial Number (S.No) to Edit: ");
+
+    
+    int addressBookSize = sizeof(ContactInfo) * address_book->count;
+    ContactInfo *matchPtr = address_book->list;
+    matchPtr = searchBySiNum(matchPtr, addressBookSize, snE);
+    
+    do{
+        menu_header("Edit Contact:");
+	    printf("\n");
+        printf("0. Back\n");
+	    printf("1. Name       : %s\n", matchPtr->name[0]);
+	    printf("2. Phone No %d : %s\n", 1, matchPtr->phone_numbers[0]);
+        int i = 1;
+        while (matchPtr->phone_numbers[i] != NULL && i < PHONE_NUMBER_COUNT){
+	        printf("            %d : %s\n", (i+1), matchPtr->phone_numbers[i]);
+            i++;
+        }
+	    printf("3. Email ID %d : %s\n", 1, matchPtr->email_addresses[0]);
+        while (matchPtr->email_addresses[i] != NULL && i < EMAIL_ID_COUNT){
+	        printf("            %d : %s\n", (i+1), matchPtr->email_addresses[i]);
+            i++;
+        }
+
+        option = get_option(NUM, "\nPlease select an option: ");
+
+        
+        switch (option){
+            case e_first_opt:
+                exit = 0;
+            case e_second_opt:
+                printf("Enter Name: [Just enter removes the entry]: ");
+                scanf("%s", nameE);
+                strcpy(matchPtr->name[0], nameE);
+            case e_third_opt:
+                while (!(indexE<=5 || indexE>=1)){
+                    printf("Enter Phone Number index to be change [Max 5]: ");
+                    scanf("%d", &indexE);
+                }
+                printf("Enter Phone Number %d: [Just enter removes the entry]: ", indexE);
+                scanf("%s", phoneE[indexE]);
+                strcpy(matchPtr->phone_numbers[indexE], phoneE[indexE]);
+            case e_fourth_opt:
+                while (!(indexE<=5 || indexE>=1)){
+                    printf("Enter Email Address index to be change [Max 5]: ");
+                    scanf("%d", &indexE);
+                }
+                printf("Enter Email Address %d: [Just enter removes the entry]: ", indexE);
+                scanf("%s", emailE[indexE]);
+                strcpy(matchPtr->email_addresses[indexE], emailE[indexE]);
+        }
+
+    } while (exit != 0);
+
+	return e_success;
 }
 
 Status delete_contact(AddressBook *address_book)
 {
-	int option, size, *counter, index;
+	int option, siNum;
 	char input[32];
-	int serialNum;
-	ContactInfo *matchPtr = address_book->list;
-	size = sizeof(ContactInfo) * address_book->count;
-	index = 0;
-	contactMenu("Delete by...");
-	option = get_option(NUM, "");
+	char *check;
+	int indexArray[address_book->count];
 
-	switch (option)
-	{
-	case e_first_opt:
-		get_string("name", input);
-		for(int i = 0;i < address_book->count;i++){
-			matchPtr = searchByName(&matchPtr[i], size, input);
-			if(matchPtr != NULL){
-				counter[index] = i;
-				index++;
-			}else
-				continue;
+	// FILE *fp = address_book -> fp;
+	int addressBookSize = sizeof(ContactInfo) * address_book->count;
+
+		contactMenu("Delete by...");
+
+		option = get_option(NUM, "");
+		ContactInfo *matchPtr = address_book->list;
+		
+		switch(option){
+			case e_first_opt:
+				get_string("name",input);
+				break;
+			case e_second_opt:
+				get_string("phone number", input);
+				break;
+			case e_third_opt:
+				get_string("email address", input);
+				break;
+			case e_fourth_opt:
+				siNum = get_option(NUM, "Enter serial number\n");
+				break;
+			case e_fifth_opt:
+				printf("Now exiting delete_contact...");
+				return e_success;
 		}
-		break;
-	case e_second_opt:
-		get_string("phone number", input);
-		matchPtr = searchByPhNum(matchPtr, size, input);
-		break;
-	case e_third_opt:
-		get_string("email address", input);
-		matchPtr = searchByEmail(matchPtr, size, input);
-		break;
-	case e_fourth_opt:
-		serialNum = get_option(NUM, "Enter serial number to look for: ");
-		matchPtr = searchBySiNum(matchPtr, size, serialNum);
-		break;
-	case e_fifth_opt:
-		printf("Now exiting delete_contact...\n");
-		break;
-	}
+		
+		int counter = 0;
+
+		for(int index = 0; index < address_book->count; index++){
+			switch (option)
+			{
+				case e_first_opt:
+					printf("Made it to 306\n");
+					printf("Match ptr is: %s\n", matchPtr[index].name);
+					printf("index is %d\n", index);
+					matchPtr = searchByName(&matchPtr[index], addressBookSize, input);
+					break;
+				case e_second_opt:
+					matchPtr = searchByPhNum(&matchPtr[index], addressBookSize, input);
+					break;
+				case e_third_opt:
+					matchPtr = searchByEmail(&matchPtr[index], addressBookSize, input);
+					break;
+				case e_fourth_opt:
+					matchPtr = searchBySiNum(&matchPtr[index], addressBookSize, siNum);
+					break;
+				default:
+					return e_fail;
+					break;
+			}
+
+			if(matchPtr != NULL){
+				indexArray[counter] = index;
+				counter++;
+			}
+		}
+
+		if(counter == 0)
+			return e_no_match;
+		else{
+			printContact(address_book, indexArray, counter);
+			
+		}
 
 	return e_success;
 
