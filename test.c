@@ -11,9 +11,9 @@ int main(int argc, char const *argv[])
     AddressBook addBook;
 
     int size = 100;
-    ContactInfo contArray[2];
+    ContactInfo contArray[3];
     addBook.list = contArray;
-    addBook.count = 2;
+    addBook.count = 3;
     ContactInfo ptr;
     char name[32];
 
@@ -22,6 +22,7 @@ int main(int argc, char const *argv[])
     strcpy(addBook.list[0].phone_numbers[1], "1312331231");
     addBook.list[0].si_no = 323;
     strcpy(addBook.list[1].name[0], "Iggy");
+    strcpy(addBook.list[2].name[0], "Uzi");
     Status menu(AddressBook *address_book);
 
 

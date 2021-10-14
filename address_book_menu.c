@@ -173,11 +173,11 @@ void contactMenu(const char *msg){
 }
 
 void printContact(AddressBook *address_book, int *indexes, int size){
-	printf("size is: %d\n", size);
 	int index;
 	ContactInfo *ptr = address_book->list;
 	for(int i = 0; i < size; i++){
 		index = indexes[i];
+		printf("Contact #%d\n", i);
 		printf("**********************************\n");
 		printf("Name:            %s\n", ptr[index].name);
 		printf("PhoneNumbers:    %s\n", ptr[index].phone_numbers[0]);
@@ -281,15 +281,35 @@ Status edit_contact(AddressBook *address_book)
 	return e_success;
 }
 
+void excludeContact(AddressBook *address_book, int index){
+	int size = address_book->count;
+	ContactInfo ptr[size - 1];
+	short found = 0;
+	for(int i = 0; i < size - 1; i++){
+		if(i == index)
+			found = 1;
+		if(found == 0)
+			ptr[i] = address_book->list[i];
+		else
+			ptr[i] = address_book->list[i+1];
+	}
+
+	for(int i = 0; i < size - 1; i++)
+		address_book->list[i] = ptr[i];
+
+	address_book->count --;
+}
+
 Status delete_contact(AddressBook *address_book)
 {
 	int option, siNum;
+	int size = address_book->count;
 	char input[32];
 	char *check;
 	int indexArray[address_book->count];
 
 	// FILE *fp = address_book -> fp;
-	int addressBookSize = sizeof(ContactInfo) * address_book->count;
+	int addressBookSize = sizeof(ContactInfo) * size;
 
 		contactMenu("Delete by...");
 
@@ -316,14 +336,13 @@ Status delete_contact(AddressBook *address_book)
 		
 		int counter = 0;
 
-		for(int index = 0; index < address_book->count; index++){
+		for(int index = 0; index < size; index++){
 			switch (option)
 			{
 				case e_first_opt:
-					printf("Made it to 306\n");
-					printf("Match ptr is: %s\n", matchPtr[index].name);
-					printf("index is %d\n", index);
+					printf("matchPointer is at: %s\n", matchPtr[index]);
 					matchPtr = searchByName(&matchPtr[index], addressBookSize, input);
+					printf("Line 341\n");
 					break;
 				case e_second_opt:
 					matchPtr = searchByPhNum(&matchPtr[index], addressBookSize, input);
@@ -335,21 +354,28 @@ Status delete_contact(AddressBook *address_book)
 					matchPtr = searchBySiNum(&matchPtr[index], addressBookSize, siNum);
 					break;
 				default:
-					return e_fail;
 					break;
 			}
+
+			printf("Line 356\n");
 
 			if(matchPtr != NULL){
 				indexArray[counter] = index;
 				counter++;
-			}
+			}else
+				matchPtr = address_book->list;
 		}
 
-		if(counter == 0)
+		if(counter == 0){
+			printf("Not found\n");
 			return e_no_match;
+		}
 		else{
+			system("cls");
 			printContact(address_book, indexArray, counter);
-			
+			option = get_option(NUM, "Select which contact you would like to delete: \n(Input any other number to void deletion)\n");
+			if(option < counter && option >= 0)
+				excludeContact(address_book, indexArray[option]);
 		}
 
 	return e_success;
