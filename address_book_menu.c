@@ -175,19 +175,46 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 Status search_contact(AddressBook *address_book)
 {
 	FILE *fptr;
-	if((fptr = fopen(fptr, "r"))== NULL)
+	if((fptr == fopen(address_book, "r"))== NULL)
 	{
-		FILE_ERROR(fptr);
+		FILE_ERROR(address_book);
 		exit(4);
 	}
+	int addressBookSize = sizeof(ContactInfo) * address_book->count;
+	char *nameE;
+	char *phoneE[NUMBER_LEN];
+	char *emailE[EMAIL_ID_LEN];
+	int snE;
+	int indexE;
 	int option; 
+	int counter = 0;
 	do
 	{
 		contactMenu("Search by...");
 		option = get_option(NUM, "");
+		ContactInfo *matchPtr = address_book->list;
 		switch(option)
 		{
 			case e_first_opt:
+				printf("Enter a name to search: ");
+				scanf("%s", nameE);
+				while (fread(&address_book, sizeof(address_book),1, fptr)==1)
+				{
+					if(!strcmp(nameE, &address_book))
+					{
+						printf("contact FOUND\nName    : %s\nPhone No: %s\nEmail Id: %s\n", nameE, &phoneE , &emailE);
+						counter++;
+					}
+				}
+				if (!counter)
+				{
+					printf("Contanct not found\n");
+					return -2;
+				}
+				else if (counter > 1)
+				{
+					printf("WARNING: contacts with either same NAME, PHONE NUMBER, or EMAIL ID found\n");
+				}
 				break;
 			case e_second_opt:
 				break;
@@ -198,7 +225,7 @@ Status search_contact(AddressBook *address_book)
 			case e_fifth_opt:
 				break;
 		}
-	} while (/* condition */);
+	} while (option != e_fifth_opt);
 	
 }
 
