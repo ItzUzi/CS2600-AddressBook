@@ -10,16 +10,16 @@ int main(int argc, char const *argv[])
 {
     AddressBook addBook;
 
-    int size = addBook.count;
-    ContactInfo contArray[size + 1];
+    int size = 100;
+    ContactInfo contArray[2];
     addBook.list = contArray;
-
+    addBook.count = 2;
     ContactInfo ptr;
     char name[32];
 
     strcpy(addBook.list[0].name[0], "Uzi");
     strcpy(addBook.list[0].phone_numbers[0], "3235561034");
-    strcpy(addBook.list[0].phone_numbers[1], "3234480109");
+    strcpy(addBook.list[0].phone_numbers[1], "1312331231");
     addBook.list[0].si_no = 323;
     strcpy(addBook.list[1].name[0], "Iggy");
     Status menu(AddressBook *address_book);
