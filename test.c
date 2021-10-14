@@ -27,9 +27,13 @@ int main(int argc, char const *argv[])
     strcpy(addBook.list[0].name[0], "Uzi");
     strcpy(addBook.list[0].phone_numbers[0], "3235561034");
     strcpy(addBook.list[0].phone_numbers[1], "1312331231");
+    strcpy(addBook.list[0].email_addresses[0], "ugaeta@cpp.edu");
     addBook.list[0].si_no = 323;
     strcpy(addBook.list[1].name[0], "Iggy");
+    strcpy(addBook.list[1].phone_numbers[0], "3235561034");
+    strcpy(addBook.list[1].email_addresses[0], "iggy@gmail.com");
     strcpy(addBook.list[2].name[0], "Uzi");
+    strcpy(addBook.list[2].email_addresses[0], "ugaeta@cpp.edu");
     Status menu(AddressBook *address_book);
 
 
