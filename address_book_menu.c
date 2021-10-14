@@ -172,6 +172,23 @@ void contactMenu(const char *msg){
 	printf("4. Exit\n");
 }
 
+void printContact(AddressBook *address_book, int *indexes, int size){
+	printf("size is: %d\n", size);
+	int index;
+	ContactInfo *ptr = address_book->list;
+	for(int i = 0; i < size; i++){
+		index = indexes[i];
+		printf("**********************************\n");
+		printf("Name:            %s\n", ptr[index].name);
+		printf("PhoneNumbers:    %s\n", ptr[index].phone_numbers[0]);
+		printf("                 %s\n", ptr[index].phone_numbers[1]);
+		printf("Email Addresses: %s\n", ptr[index].email_addresses[0]);
+		printf("                 %s\n", ptr[index].email_addresses[1]);
+		printf("Serial Number:   %d\n", ptr[index].si_no);
+		printf("**********************************\n");
+	}
+}
+
 Status add_contacts(AddressBook *address_book)
 {
 	/* Add the functionality for adding contacts here */
@@ -269,10 +286,11 @@ Status delete_contact(AddressBook *address_book)
 	int option, siNum;
 	char input[32];
 	char *check;
+	int indexArray[address_book->count];
 
 	// FILE *fp = address_book -> fp;
 	int addressBookSize = sizeof(ContactInfo) * address_book->count;
-	do{
+
 		contactMenu("Delete by...");
 
 		option = get_option(NUM, "");
@@ -281,30 +299,58 @@ Status delete_contact(AddressBook *address_book)
 		switch(option){
 			case e_first_opt:
 				get_string("name",input);
-				matchPtr = searchByName(matchPtr, addressBookSize, input);
 				break;
 			case e_second_opt:
 				get_string("phone number", input);
-				matchPtr = searchByPhNum(matchPtr, addressBookSize, input);
 				break;
 			case e_third_opt:
 				get_string("email address", input);
-				matchPtr = searchByEmail(matchPtr, addressBookSize, input);
 				break;
 			case e_fourth_opt:
 				siNum = get_option(NUM, "Enter serial number\n");
-				matchPtr = searchBySiNum(matchPtr, addressBookSize, siNum);
 				break;
 			case e_fifth_opt:
 				printf("Now exiting delete_contact...");
 				return e_success;
 		}
+		
+		int counter = 0;
 
-		if(matchPtr != NULL) // If found, reinitialize list with count decremented and index of list deleted.
-			printf("Success\n");
-		else
-			printf("Could not find\n");
-	}while(option != e_fifth_opt);
+		for(int index = 0; index < address_book->count; index++){
+			switch (option)
+			{
+				case e_first_opt:
+					printf("Made it to 306\n");
+					printf("Match ptr is: %s\n", matchPtr[index].name);
+					printf("index is %d\n", index);
+					matchPtr = searchByName(&matchPtr[index], addressBookSize, input);
+					break;
+				case e_second_opt:
+					matchPtr = searchByPhNum(&matchPtr[index], addressBookSize, input);
+					break;
+				case e_third_opt:
+					matchPtr = searchByEmail(&matchPtr[index], addressBookSize, input);
+					break;
+				case e_fourth_opt:
+					matchPtr = searchBySiNum(&matchPtr[index], addressBookSize, siNum);
+					break;
+				default:
+					return e_fail;
+					break;
+			}
+
+			if(matchPtr != NULL){
+				indexArray[counter] = index;
+				counter++;
+			}
+		}
+
+		if(counter == 0)
+			return e_no_match;
+		else{
+			printContact(address_book, indexArray, counter);
+			
+		}
 
 	return e_success;
 
