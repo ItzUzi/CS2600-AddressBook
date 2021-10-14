@@ -259,12 +259,33 @@ Status search_contact(AddressBook *address_book)
 				}
 				break;
 			case e_fourth_opt:
-				printf("");
+				printf("Enter an SI number to search: ");
+				scanf("%s", NUM);
+				while (fread(&address_book, sizeof(address_book), 1, fptr) == 1);
+				{
+					if(!strcmp(NUM, &address_book))
+					{
+						printf("contact FOUND\nName    : %s\nPhone No: %s\nEmail Id: %s\n", nameE, &phoneE , &emailE);
+						counter++;
+					}
+				}
+				if (!counter)
+				{
+					printf("Contanct not found\n");
+					return -2;
+				}
+				else if (counter > 1)
+				{
+					printf("WARNING: contacts with either same NAME, PHONE NUMBER, or EMAIL ID found\n");
+				}
 				break;
 			case e_fifth_opt:
-				break;
+				printf("\nNow exiting search contact...");
+				return e_success;
 		}
-	} while (option != e_fifth_opt);
+	} 
+	while (option != e_fifth_opt);
+	return e_success;
 	
 }
 
