@@ -180,17 +180,26 @@ Status search_contact(AddressBook *address_book)
 		FILE_ERROR(fptr);
 		exit(4);
 	}
-
-	printf("Enter an option to search by\n1.) Search by name\n2.)Search by Phone number\n3.)Search by Email ID\n4.)Search by Serial Number");
 	int option; 
-	scanf("%d", &option);
-	int count = 0;
-	switch(option)
+	do
 	{
-		case 1:
-			printf("Enter a Name to search: ");
-			
-	}
+		contactMenu("Search by...");
+		option = get_option(NUM, "");
+		switch(option)
+		{
+			case e_first_opt:
+				break;
+			case e_second_opt:
+				break;
+			case e_third_opt:
+				break;
+			case e_fourth_opt:
+				break;
+			case e_fifth_opt:
+				break;
+		}
+	} while (/* condition */);
+	
 }
 
 Status edit_contact(AddressBook *address_book)
