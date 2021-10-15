@@ -17,9 +17,6 @@ void loadIntoAddress(AddressBook *address_book, char *temp, int index){
 
 	for(int i = 0; i < 11; i++){
 		strcpy(check,strtok(NULL, ","));
-		printf("Check is %s\n", check);
-		printf("i is %d\n", i);
-
 		if(i >= 0 && i < 5)
 			strcpy(address_book->list[index].phone_numbers[i], check);
 		else if(i >= 5 && i < 10)

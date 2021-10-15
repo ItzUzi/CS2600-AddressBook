@@ -589,7 +589,6 @@ Status delete_contact(AddressBook *address_book)
 		return e_no_match;
 	}
 	else{
-		system("cls");
 		printContact(address_book, indexArray, counter);
 		option = get_option(NUM, "Select which contact you would like to delete: \n(Input any other number to void deletion)\n");
 		if(option < counter && option >= 0)
