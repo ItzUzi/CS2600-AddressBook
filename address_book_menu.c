@@ -255,56 +255,66 @@ void printContact(AddressBook *address_book, int *indexes, int size){
 
 Status add_contacts(AddressBook *address_book)
 {
-	int exit = -1;
-	int i = 1;
-	
+	ContactInfo *ptr;
 	int addressBookSize = sizeof(ContactInfo) * address_book->count;
-    ContactInfo *matchPtr = address_book->list;
+	ContactInfo *matchPtr = address_book->list;
+	int option, si_num;
+	char input[32];
+	int count = address_book->count;
+
+	int phoneIndex = 0;
+	int emailIndex = 0;
+
+	ptr = (ContactInfo*) malloc((ptr, (count + 1) * sizeof(ContactInfo)));
+	address_book->list = ptr;
+	
+	contactMenu("add contact by..");
 
 	do
-	{
-		menu_header("Add Contact");
-		printf("\n");
-		printf("0. Back\n");
-		printf("1. Name      :%s\n", matchPtr->name[0]);
-		printf("2. Phone No %d :%s\n", 1, matchPtr->phone_numbers[0]);
-		while (matchPtr->phone_numbers[i] != NULL && i < PHONE_NUMBER_COUNT)
-		{
-	        printf("            %d : %s\n", (i+1), matchPtr->phone_numbers[i]);
-            i++;
-		}
-		printf("3. Email ID %d :%s\n", 1, matchPtr->email_addresses[0]);
-		while (matchPtr->email_addresses[i] != NULL && i < EMAIL_ID_COUNT)
-		{
-	        printf("            %d : %s\n", (i+1), matchPtr->email_addresses[i]);
-            i++;
-        }
-		
-		int option = get_option(NUM, "Please select an option:\n");
-		scanf("%d", option);
+	{	
+		int option = get_option(NUM, "");
 
 		switch(option)
 		{
 			case e_first_opt:
-				exit = 0;
+				get_string("name", input);
 				break;
 			case e_second_opt:
-				printf("Enter the name:\n");
-				scanf("%s", matchPtr->name[0]);
+				get_string("phone number", input);
 				break;
 			case e_third_opt:
-				printf("Enter Phone Number %d:\n", i);
-				scanf("%s", matchPtr->phone_numbers[0]);
+				get_string("email address", input);
 				break;
 			case e_fourth_opt:
-				printf("Enter Email ID %d:\n", i);
-				scanf("%s", matchPtr->email_addresses[0]);
+				si_num = get_option(NUM, "Enter serial number");
+				break;
+			case e_fifth_opt:
+				break;
+			default:
+				printf("Input a valid option!\n");
 				break;
 		}
 
+		switch (option)
+		{
+			case e_first_opt:
+				strcpy(matchPtr[count].name[0], input);
+				break;
+			case e_second_opt:
+				strcpy(matchPtr[count].phone_numbers[phoneIndex], input);
+				phoneIndex++;
+				break;
+			case e_third_opt:
+				strcpy(matchPtr[count].email_addresses[emailIndex], input);
+				emailIndex++;
+				break;
+			case e_fourth_opt:
+				matchPtr[count].si_no = si_num;
+				break;
+		}
+		printContact(address_book, count, count + 1);
 
-
-	} while (exit != 0);
+	} while (option != e_fifth_opt);
 
 	address_book->count ++;
 	return e_success;
