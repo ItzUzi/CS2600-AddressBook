@@ -90,7 +90,7 @@ void menu_header(const char *str)
 {
 	fflush(stdout);
 
-	system("cls");
+	//system("cls");
 
 	printf("#######  Address Book  #######\n");
 	if (*str != '\0')

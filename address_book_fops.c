@@ -12,7 +12,9 @@ Status load_file(AddressBook *address_book)
 {	FILE *fp = address_book->fp;
 	int ret;
 	int count, check;
+	count = 0;
 	char buffer[200];
+	char tdarray[200][200];
 	check = 0;
 
 	ret = access(DEFAULT_FILE, F_OK); 
@@ -20,14 +22,22 @@ Status load_file(AddressBook *address_book)
 	if (ret == 0)
 	{
 		fp = fopen(DEFAULT_FILE, "r");
-		fgets(buffer, 200, fp);
 		
+		printf("count is %d\n", count);
+
+		while(fgets(buffer, 200, fp)){
+			
+			count++;
+		}
+
+		printf("count is %d\n", count);
 
 		fclose(fp); 
 	}
 	else
 	{
-		/* Create a file for adding entries */
+		fp = fopen(DEFAULT_FILE, "w");
+		fclose(fp);
 	}
 
 	return e_success;
