@@ -77,16 +77,19 @@ Status save_prompt(AddressBook *address_book)
 
 Status list_contacts(AddressBook *address_book, const char *title, int *index, const char *msg, Modes mode)
 {
-	for (int i=0; i<address_book->count;i++)
+	printf("######### %s #######\n", title);
+	printf("%s", msg);
+    for (int i=0; i<address_book->count;i++)
     {
-		printf("######### Address Books #######\n");
-        printf("Name: ");
+        printf("Contact #%i (out of %i)\n", i+1, address_book->count);
+        printf("******************************\n");
+        printf("NAME: ");
         printf("%s", address_book->list[i].name);
 
-        printf("\nPhone Numbers: \n");
+        printf("\nPHONE NUMBERS: \n");
         for(int j=0; j<PHONE_NUMBER_COUNT; j++)
         {
-            if (strcmp(address_book->list[i].phone_numbers[j], "\0")==0 || (int)*address_book->list[i].phone_numbers[j]>=57 && (int)*address_book->list[i].phone_numbers[j]<= 48)
+            if (strcmp(address_book->list[i].phone_numbers[j], "\0")==0 || address_book->list[i].phone_numbers[j] == NULL)
             {
                 continue;
             }else{
@@ -94,10 +97,10 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
             }
         }
 
-        printf("\nEmail Addresses: \n");
+        printf("\nEMAIL ADDRESSES: \n");
         for(int k=0; k<EMAIL_ID_COUNT; k++)
         {
-            if (strcmp(address_book->list[i].email_addresses[k], "\0")==0)
+            if (strcmp(address_book->list[i].email_addresses[k], "\0")==0 || address_book->list[i].phone_numbers[k] == NULL)
             {
                 continue;
             }else{
@@ -106,8 +109,10 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
         }
 
         printf("\nsi_no: %i\n\n", address_book->list[i].si_no);
+        printf("******************************\n");
 
-		int userInp = get_option(2, "Please select an option (Y/N): ");
+        int userInp = get_option(2, "Please select an option (Y/N): ");
+        printf("\n");
 
         if (userInp == 89)
         {
