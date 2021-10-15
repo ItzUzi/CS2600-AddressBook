@@ -247,21 +247,26 @@ Status add_contacts(AddressBook *address_book)
 		{
 			case e_first_opt:
 				exit = 0;
+				break;
 			case e_second_opt:
 				printf("Enter the name:\n");
 				scanf("%s", matchPtr->name[0]);
+				break;
 			case e_third_opt:
 				printf("Enter Phone Number %d:\n", i);
 				scanf("%s", matchPtr->phone_numbers[0]);
+				break;
 			case e_fourth_opt:
 				printf("Enter Email ID %d:\n", i);
 				scanf("%s", matchPtr->email_addresses[0]);
+				break;
 		}
 
 
 
 	} while (exit != 0);
 
+	address_book->count ++;
 	return e_success;
 	
 }
