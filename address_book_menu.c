@@ -77,11 +77,50 @@ Status save_prompt(AddressBook *address_book)
 
 Status list_contacts(AddressBook *address_book, const char *title, int *index, const char *msg, Modes mode)
 {
-	/* 
-	 * Add code to list all the contacts availabe in address_book.csv file
-	 * Should be menu based
-	 * The menu provide navigation option if the entries increase the page size
-	 */ 
+	printf("######### %s #######\n", title);
+	printf("%s", msg);
+    for (int i=0; i<address_book->count;i++)
+    {
+        printf("Contact #%i (out of %i)\n", i+1, address_book->count);
+        printf("******************************\n");
+        printf("NAME: ");
+        printf("%s", address_book->list[i].name);
+
+        printf("\nPHONE NUMBERS: \n");
+        for(int j=0; j<PHONE_NUMBER_COUNT; j++)
+        {
+            if (strcmp(address_book->list[i].phone_numbers[j], "\0")==0 || address_book->list[i].phone_numbers[j] == NULL)
+            {
+                continue;
+            }else{
+                printf("\t%s\n", address_book->list[i].phone_numbers[j]);
+            }
+        }
+
+        printf("\nEMAIL ADDRESSES: \n");
+        for(int k=0; k<EMAIL_ID_COUNT; k++)
+        {
+            if (strcmp(address_book->list[i].email_addresses[k], "\0")==0 || address_book->list[i].phone_numbers[k] == NULL)
+            {
+                continue;
+            }else{
+                printf("\t%s\n", address_book->list[i].email_addresses[k]);
+            }
+        }
+
+        printf("\nsi_no: %i\n\n", address_book->list[i].si_no);
+        printf("******************************\n");
+
+        int userInp = get_option(2, "Please select an option (Y/N): ");
+        printf("\n");
+
+        if (userInp == 89)
+        {
+            continue;
+        }else if(userInp == 78) {
+            break;
+        }
+	}
 
 	return e_success;
 }
@@ -247,21 +286,26 @@ Status add_contacts(AddressBook *address_book)
 		{
 			case e_first_opt:
 				exit = 0;
+				break;
 			case e_second_opt:
 				printf("Enter the name:\n");
 				scanf("%s", matchPtr->name[0]);
+				break;
 			case e_third_opt:
 				printf("Enter Phone Number %d:\n", i);
 				scanf("%s", matchPtr->phone_numbers[0]);
+				break;
 			case e_fourth_opt:
 				printf("Enter Email ID %d:\n", i);
 				scanf("%s", matchPtr->email_addresses[0]);
+				break;
 		}
 
 
 
 	} while (exit != 0);
 
+	address_book->count ++;
 	return e_success;
 	
 }
@@ -273,7 +317,7 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 
 Status search_contact(AddressBook *address_book)
 {
-	FILE *fptr;
+/*	FILE *fptr;
 	if((fptr == fopen(address_book, "r"))== NULL)
 	{
 		FILE_ERROR(address_book);
@@ -383,7 +427,7 @@ Status search_contact(AddressBook *address_book)
 				return e_success;
 		}
 	} 
-	while (option != e_fifth_opt);
+	while (option != e_fifth_opt);*/
 	return e_success;
 	
 }
@@ -398,7 +442,7 @@ Status edit_contact(AddressBook *address_book)
     int exit = -1;
     int option;
     
-    /*search_contact(address_book);*/
+    // int i =  (search_contact(address_book));
 
     char select = get_option(CHAR,"\nPress: [s] = Select, [q] | Cancel: ");
 
@@ -535,8 +579,6 @@ Status delete_contact(AddressBook *address_book)
 				case e_fourth_opt:
 					matchPtr = searchBySiNum(&matchPtr[index], addressBookSize, siNum);
 					break;
-				default:
-					break;
 			}
 
 			if(matchPtr != NULL){
@@ -557,7 +599,6 @@ Status delete_contact(AddressBook *address_book)
 			if(option < counter && option >= 0)
 				excludeContact(address_book, indexArray[option]);
 		}
-
 	return e_success;
 
 }
