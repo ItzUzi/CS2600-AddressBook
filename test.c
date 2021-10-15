@@ -22,12 +22,12 @@ int main(int argc, char const *argv[])
     strcpy(addBook.list[0].phone_numbers[1], "3234480109");
     addBook.list[0].si_no = 323;
     printf("phone num is: %s", addBook.list[0].phone_numbers[0]);
-    printf("%d", sizeof(addBook.list[0].name[0]));
+    printf("", sizeof(addBook.list[0].name[0]));
 
-    Status delete_contact(AddressBook *address_book);
+    Status edit_contact(AddressBook *address_book);
 
 
-    int result = delete_contact(&addBook);
+    int result = edit_contact(&addBook);
 
     return 0;
 }
