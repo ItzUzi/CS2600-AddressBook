@@ -239,7 +239,7 @@ void static printPHandEMAIL(AddressBook *address_book, int index){
 
 }
 
-void printContact(AddressBook *address_book, int *indexes, int size){
+void printContacts(AddressBook *address_book, int *indexes, int size){
 	int index;
 	ContactInfo *ptr = address_book->list;
 	for(int i = 0; i < size; i++){
@@ -252,12 +252,21 @@ void printContact(AddressBook *address_book, int *indexes, int size){
 		printf("**********************************\n");
 	}
 }
+void printContact(AddressBook *address_book, int index, int size){
+	//system("cls");
+	ContactInfo *ptr = address_book->list;
+
+	printf("**********************************\n");
+	printf("Name:            %s\n", ptr[index].name);
+	printPHandEMAIL(address_book, index);
+	printf("Serial Number:   %d\n", ptr[index].si_no);
+	printf("**********************************\n");
+}
 
 Status add_contacts(AddressBook *address_book)
 {
 	ContactInfo *ptr;
 	int addressBookSize = sizeof(ContactInfo) * address_book->count;
-	ContactInfo *matchPtr = address_book->list;
 	int option, si_num;
 	char input[32];
 	int count = address_book->count;
@@ -265,28 +274,34 @@ Status add_contacts(AddressBook *address_book)
 	int phoneIndex = 0;
 	int emailIndex = 0;
 
-	ptr = (ContactInfo*) malloc((ptr, (count + 1) * sizeof(ContactInfo)));
-	address_book->list = ptr;
+	ptr = (ContactInfo*) malloc((ptr, (address_book->count + 1) * sizeof(ContactInfo)));
+	address_book->list[count] = *ptr;
 	
 	contactMenu("add contact by..");
 
 	do
 	{	
-		int option = get_option(NUM, "");
+		option = get_option(NUM, "");
 
 		switch(option)
 		{
 			case e_first_opt:
 				get_string("name", input);
+				strcpy(address_book->list[count].name[0], input);
 				break;
 			case e_second_opt:
 				get_string("phone number", input);
+				strcpy(address_book->list[count].phone_numbers[phoneIndex], input);
+				phoneIndex++;
 				break;
 			case e_third_opt:
 				get_string("email address", input);
+				strcpy(address_book->list[count].email_addresses[emailIndex], input);
+				emailIndex++;
 				break;
 			case e_fourth_opt:
 				si_num = get_option(NUM, "Enter serial number");
+				address_book->list[count].si_no = si_num;
 				break;
 			case e_fifth_opt:
 				break;
@@ -294,25 +309,11 @@ Status add_contacts(AddressBook *address_book)
 				printf("Input a valid option!\n");
 				break;
 		}
-
-		switch (option)
-		{
-			case e_first_opt:
-				strcpy(matchPtr[count].name[0], input);
-				break;
-			case e_second_opt:
-				strcpy(matchPtr[count].phone_numbers[phoneIndex], input);
-				phoneIndex++;
-				break;
-			case e_third_opt:
-				strcpy(matchPtr[count].email_addresses[emailIndex], input);
-				emailIndex++;
-				break;
-			case e_fourth_opt:
-				matchPtr[count].si_no = si_num;
-				break;
+		
+		if(option != e_fifth_opt){
+			printContact(address_book, count, count + 1);
+			contactMenu("select an option");
 		}
-		printContact(address_book, count, count + 1);
 
 	} while (option != e_fifth_opt);
 
@@ -606,7 +607,7 @@ Status delete_contact(AddressBook *address_book)
 		return e_no_match;
 	}
 	else{
-		printContact(address_book, indexArray, counter);
+		printContacts(address_book, indexArray, counter);
 		option = get_option(NUM, "Select which contact you would like to delete: \n(Input any other number to void deletion)\n");
 		if(option < counter && option >= 0)
 			excludeContact(address_book, indexArray[option]);
