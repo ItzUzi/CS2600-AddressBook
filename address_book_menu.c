@@ -8,6 +8,7 @@
 #include "address_book_menu.h"
 #include "funct_by_call.h"
 
+
 Status save_file(AddressBook *address_book);
 
 /**
@@ -529,12 +530,11 @@ void excludeContact(AddressBook *address_book, int index){
 }
 
 Status delete_contact(AddressBook *address_book)
-{
+{	
+	ContactInfo *ptr;
 	system("cls");
 	int option, siNum;
-	printf("line 535\n");
 	int size = address_book->count;
-	printf("size is %d\n", size);
 	char input[32];
 	char *check;
 	int indexArray[address_book->count];
