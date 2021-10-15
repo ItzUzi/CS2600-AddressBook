@@ -252,8 +252,8 @@ void printContacts(AddressBook *address_book, int *indexes, int size){
 		printf("**********************************\n");
 	}
 }
-void printContact(AddressBook *address_book, int index, int size){
-	//system("cls");
+void printContact(AddressBook *address_book, int index){
+	system("cls");
 	ContactInfo *ptr = address_book->list;
 
 	printf("**********************************\n");
@@ -273,9 +273,8 @@ Status add_contacts(AddressBook *address_book)
 
 	int phoneIndex = 0;
 	int emailIndex = 0;
-
-	ptr = (ContactInfo*) malloc((ptr, (address_book->count + 1) * sizeof(ContactInfo)));
-	address_book->list[count] = *ptr;
+	ptr = (ContactInfo*) realloc(ptr, (count + sizeof(int)) * sizeof(ContactInfo));
+	address_book->list = ptr;
 	
 	contactMenu("add contact by..");
 
@@ -292,6 +291,7 @@ Status add_contacts(AddressBook *address_book)
 			case e_second_opt:
 				get_string("phone number", input);
 				strcpy(address_book->list[count].phone_numbers[phoneIndex], input);
+				printf("Phone number is: %s\n",address_book->list[count].phone_numbers[phoneIndex]);
 				phoneIndex++;
 				break;
 			case e_third_opt:
@@ -300,7 +300,7 @@ Status add_contacts(AddressBook *address_book)
 				emailIndex++;
 				break;
 			case e_fourth_opt:
-				si_num = get_option(NUM, "Enter serial number");
+				si_num = get_option(NUM, "Enter serial number: ");
 				address_book->list[count].si_no = si_num;
 				break;
 			case e_fifth_opt:
@@ -311,12 +311,13 @@ Status add_contacts(AddressBook *address_book)
 		}
 		
 		if(option != e_fifth_opt){
-			printContact(address_book, count, count + 1);
+			printContact(address_book, count);
 			contactMenu("select an option");
 		}
 
 	} while (option != e_fifth_opt);
 
+	free(ptr);
 	address_book->count ++;
 	return e_success;
 	

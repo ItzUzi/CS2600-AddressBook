@@ -60,6 +60,7 @@ Status load_file(AddressBook *address_book)
 	fclose(fp);
 
 	address_book->count = count;
+	free(address_book->list);
 
 	return e_success;
 }
