@@ -90,7 +90,7 @@ void menu_header(const char *str)
 {
 	fflush(stdout);
 
-	//system("cls");
+	system("cls");
 
 	printf("#######  Address Book  #######\n");
 	if (*str != '\0')
@@ -101,7 +101,6 @@ void menu_header(const char *str)
 
 void main_menu(void)
 {
-	system("cls");
 	menu_header("Features:\n");
 
 	printf("0. Exit\n");
