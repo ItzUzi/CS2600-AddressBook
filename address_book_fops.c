@@ -9,19 +9,21 @@
 #include "address_book.h"
 
 Status load_file(AddressBook *address_book)
-{
+{	FILE *fp = address_book->fp;
 	int ret;
+	int count, check;
+	char buffer[200];
+	check = 0;
 
-	/* 
-	 * Check for file existance
-	 */
+	ret = access(DEFAULT_FILE, F_OK); 
 
 	if (ret == 0)
 	{
-		/* 
-		 * Do the neccessary step to open the file
-		 * Do error handling
-		 */ 
+		fp = fopen(DEFAULT_FILE, "r");
+		fgets(buffer, 200, fp);
+		
+
+		fclose(fp); 
 	}
 	else
 	{

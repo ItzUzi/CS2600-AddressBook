@@ -90,7 +90,7 @@ void menu_header(const char *str)
 {
 	fflush(stdout);
 
-	//system("cls");
+	system("cls");
 
 	printf("#######  Address Book  #######\n");
 	if (*str != '\0')
@@ -383,70 +383,67 @@ Status delete_contact(AddressBook *address_book)
 	int indexArray[address_book->count];
 	int addressBookSize = sizeof(ContactInfo) * size;
 
-		contactMenu("Delete by...");
+	contactMenu("Delete by...");
 
-		option = get_option(NUM, "");
-		ContactInfo *matchPtr = address_book->list;
+	option = get_option(NUM, "");
+	ContactInfo *matchPtr = address_book->list;
 		
-		system("cls");
-		switch(option){
+	system("cls");
+	switch(option){
+		case e_first_opt:
+			get_string("name",input);
+			break;
+		case e_second_opt:
+			get_string("phone number", input);
+			break;
+		case e_third_opt:
+			get_string("email address", input);
+			break;
+		case e_fourth_opt:
+			siNum = get_option(NUM, "Enter serial number\n");
+			break;
+		case e_fifth_opt:
+			printf("Now exiting delete_contact...");
+			return e_success;
+	}
+		
+	int counter = 0;
+
+	// Checks all contacts for what the user would like to search for
+	for(int index = 0; index < size; index++){
+		switch (option)
+		{
 			case e_first_opt:
-				get_string("name",input);
+				matchPtr = searchByName(&matchPtr[index], addressBookSize, input);
 				break;
 			case e_second_opt:
-				get_string("phone number", input);
+				matchPtr = searchByPhNum(&matchPtr[index], addressBookSize, input);
 				break;
 			case e_third_opt:
-				get_string("email address", input);
+				matchPtr = searchByEmail(&matchPtr[index], addressBookSize, input);
 				break;
 			case e_fourth_opt:
-				siNum = get_option(NUM, "Enter serial number\n");
+				matchPtr = searchBySiNum(&matchPtr[index], addressBookSize, siNum);
 				break;
-			case e_fifth_opt:
-				printf("Now exiting delete_contact...");
-				return e_success;
-		}
-		
-		int counter = 0;
-
-		for(int index = 0; index < size; index++){
-			switch (option)
-			{
-				case e_first_opt:
-					matchPtr = searchByName(&matchPtr[index], addressBookSize, input);
-					break;
-				case e_second_opt:
-					matchPtr = searchByPhNum(&matchPtr[index], addressBookSize, input);
-					break;
-				case e_third_opt:
-					matchPtr = searchByEmail(&matchPtr[index], addressBookSize, input);
-					break;
-				case e_fourth_opt:
-					matchPtr = searchBySiNum(&matchPtr[index], addressBookSize, siNum);
-					break;
-				default:
-					break;
 			}
 
-			if(matchPtr != NULL){
-				indexArray[counter] = index;
-				counter++;
-			}else
-				matchPtr = address_book->list;
-		}
+		if(matchPtr != NULL){
+			indexArray[counter] = index;
+			counter++;
+		}else
+			matchPtr = address_book->list;
+	}
 
-		if(counter == 0){
-			printf("Not found\n");
-			return e_no_match;
-		}
-		else{
-			system("cls");
-			printContact(address_book, indexArray, counter);
-			option = get_option(NUM, "Select which contact you would like to delete: \n(Input any other number to void deletion)\n");
-			if(option < counter && option >= 0)
-				excludeContact(address_book, indexArray[option]);
-		}
-
+	if(counter == 0){
+		printf("Not found\n");
+		return e_no_match;
+	}
+	else{
+		system("cls");
+		printContact(address_book, indexArray, counter);
+		option = get_option(NUM, "Select which contact you would like to delete: \n(Input any other number to void deletion)\n");
+		if(option < counter && option >= 0)
+			excludeContact(address_book, indexArray[option]);
+	}
 	return e_success;
-
 }
