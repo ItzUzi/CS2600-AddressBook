@@ -77,11 +77,45 @@ Status save_prompt(AddressBook *address_book)
 
 Status list_contacts(AddressBook *address_book, const char *title, int *index, const char *msg, Modes mode)
 {
-	/* 
-	 * Add code to list all the contacts availabe in address_book.csv file
-	 * Should be menu based
-	 * The menu provide navigation option if the entries increase the page size
-	 */ 
+	for (int i=0; i<address_book->count;i++)
+    {
+		printf("######### Address Books #######\n");
+        printf("Name: ");
+        printf("%s", address_book->list[i].name);
+
+        printf("\nPhone Numbers: \n");
+        for(int j=0; j<PHONE_NUMBER_COUNT; j++)
+        {
+            if (strcmp(address_book->list[i].phone_numbers[j], "\0")==0 || (int)*address_book->list[i].phone_numbers[j]>=57 && (int)*address_book->list[i].phone_numbers[j]<= 48)
+            {
+                continue;
+            }else{
+                printf("\t%s\n", address_book->list[i].phone_numbers[j]);
+            }
+        }
+
+        printf("\nEmail Addresses: \n");
+        for(int k=0; k<EMAIL_ID_COUNT; k++)
+        {
+            if (strcmp(address_book->list[i].email_addresses[k], "\0")==0)
+            {
+                continue;
+            }else{
+                printf("\t%s\n", address_book->list[i].email_addresses[k]);
+            }
+        }
+
+        printf("\nsi_no: %i\n\n", address_book->list[i].si_no);
+
+		int userInp = get_option(2, "Please select an option (Y/N): ");
+
+        if (userInp == 89)
+        {
+            continue;
+        }else if(userInp == 78) {
+            break;
+        }
+    }
 
 	return e_success;
 }
