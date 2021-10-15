@@ -101,7 +101,6 @@ void menu_header(const char *str)
 
 void main_menu(void)
 {
-	system("cls");
 	menu_header("Features:\n");
 
 	printf("0. Exit\n");
@@ -274,7 +273,7 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 
 Status search_contact(AddressBook *address_book)
 {
-	FILE *fptr;
+/* 	FILE *fptr;
 	if((fptr == fopen(address_book, "r"))== NULL)
 	{
 		FILE_ERROR(address_book);
@@ -384,7 +383,7 @@ Status search_contact(AddressBook *address_book)
 				return e_success;
 		}
 	} 
-	while (option != e_fifth_opt);
+	while (option != e_fifth_opt); */
 	return e_success;
 	
 }
