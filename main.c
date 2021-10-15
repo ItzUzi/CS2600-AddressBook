@@ -9,12 +9,12 @@
 int main(void)
 {
 	AddressBook address_book;
-	ContactInfo cont[1000];
-	address_book.list = cont;
 	Status ret;
 
 	/* Load the file from .csv file if any */
 	ret = load_file(&address_book);
+
+	printf("Address book count %d", address_book.count);
 
 	if (ret == e_success)
 	{

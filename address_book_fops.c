@@ -8,29 +8,18 @@
 
 #include "address_book.h"
 
-void loadIntoAddress(AddressBook *address_book, char *temp, int index){
-	AddressBook addBook = *address_book;
-	int si_num;
-	char check[100];
-	strcpy(check, strtok(temp, ","));
-	strcpy(address_book->list[index].name[0], check);
 
-	for(int i = 0; i < 11; i++){
-		strcpy(check,strtok(NULL, ","));
-		if(i >= 0 && i < 5)
-			strcpy(address_book->list[index].phone_numbers[i], check);
-		else if(i >= 5 && i < 10)
-			strcpy(address_book->list[index].email_addresses[i-5], check);
-		else{
-			si_num = strtol(check, NULL, 10);
-			address_book->list[index].si_no = si_num;
-		}
-	}
-
-}
+ContactInfo *ptr;
+AddressBook *addPtr;
 
 Status load_file(AddressBook *address_book)
-{	FILE *fp = address_book->fp;
+{	
+	addPtr = (AddressBook*) malloc(sizeof(AddressBook));
+	ptr = (ContactInfo*) malloc(sizeof(ContactInfo));
+
+	addPtr->count = 0;
+	
+	FILE *fp = address_book->fp;
 	int ret;
 	int count = 0;
 	char buffer[500];
@@ -45,8 +34,28 @@ Status load_file(AddressBook *address_book)
 
 		while(fgets(buffer, 500, fp) && check != EOF){
 			strcpy(temp, buffer);
-			loadIntoAddress(address_book, temp, count);
-			count++;
+			addPtr->list = ptr;
+
+			int si_num;
+			char check[500];
+			strcpy(check, strtok(temp, ","));
+			strcpy(addPtr->list->name[0], check);
+
+			for(int i = 0; i < 11; i++){
+				strcpy(check,strtok(NULL, ","));
+				if(i >= 0 && i < 5)
+					strcpy(addPtr->list->phone_numbers[i], check);
+				else if(i >= 5 && i < 10)
+					strcpy(addPtr->list->email_addresses[i-5], check);
+				else{
+					si_num = strtol(check, NULL, 10);
+					addPtr->list->si_no = si_num;
+				}
+			}
+				ptr = (ContactInfo*) realloc(ptr, ((count + 1) * sizeof(ContactInfo)));
+				count++;
+				addPtr->count++;
+				printf("address book count: %d\n", addPtr->count);
 		}
 
 	}
@@ -54,8 +63,6 @@ Status load_file(AddressBook *address_book)
 		fp = fopen(DEFAULT_FILE, "w");
 
 	fclose(fp);
-
-	address_book->count = count;
 
 	return e_success;
 }

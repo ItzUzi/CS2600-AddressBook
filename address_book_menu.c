@@ -532,7 +532,9 @@ Status delete_contact(AddressBook *address_book)
 {
 	system("cls");
 	int option, siNum;
+	printf("line 535\n");
 	int size = address_book->count;
+	printf("size is %d\n", size);
 	char input[32];
 	char *check;
 	int indexArray[address_book->count];
