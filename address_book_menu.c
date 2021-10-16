@@ -183,6 +183,7 @@ Status search_contact(AddressBook *address_book)
 	char name[NAME_LEN];
 	char phoneNum[NUMBER_LEN];
 	char email[EMAIL_ID_LEN];
+	int siNum;
 
 	int size = address_book->count; // 6
 	int indexArray[address_book->count];
@@ -283,7 +284,33 @@ Status search_contact(AddressBook *address_book)
 				}
 				break;
 			case 4:
-				
+				printf("Enter the Serial Number ID you want to search: ");
+				scanf("%d", siNum);
+				for (int index = 0; index < size; index++)
+				{
+					info = searchBySiNum(&info[index], addressBookSize, siNum);
+					printf("%s", info);
+					if (info != NULL)
+					{
+						indexArray[counter] = index;
+						counter++;
+					}
+					else
+					{
+						info = address_book->list;
+					}
+				}
+				if (counter == 0)
+				{
+					printf("\n\nNot found");
+				}
+				else
+				{
+					printContacts(address_book, indexArray, counter);
+				}
+				break;
+
+
 
 
 		}
