@@ -256,6 +256,36 @@ Status search_contact(AddressBook *address_book)
 				}
 				break;
 
+			case 3:
+				printf("\nEnter the Email ID you want to search: ");
+				scanf("%s", email);
+				for (int index = 0; index < size; index++)
+				{
+					info = searchByEmail(&info[index], addressBookSize, email);
+					printf("%s", info);
+					if (info != NULL)
+					{
+						indexArray[counter] = index;
+						counter++;
+					}
+					else
+					{
+						info = address_book->list;
+					}
+				}
+				if (counter == 0)
+				{
+					printf("\n\nNot found");
+				}
+				else
+				{
+					printContacts(address_book, indexArray, counter);
+				}
+				break;
+			case 4:
+				
+
+
 		}
 	} 
 	while (inputOption != 0);
