@@ -174,119 +174,56 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 
 Status search_contact(AddressBook *address_book)
 {
-	FILE *fptr;
-	if((fptr == fopen(address_book, "r"))== NULL)
-	{
-		FILE_ERROR(address_book);
-		exit(4);
-	}
-	int addressBookSize = sizeof(ContactInfo) * address_book->count;
-	char *nameE;
-	char *phoneE[NUMBER_LEN];
-	char *emailE[EMAIL_ID_LEN];
-	int snE;
-	int indexE;
-	int option; 
-	int counter = 0;
-	do
-	{
-		contactMenu("Search by...");
-		option = get_option(NUM, "");
-		ContactInfo *matchPtr = address_book->list;
-		switch(option)
-		{
-			case e_first_opt:
-				printf("Enter a name to search: ");
-				scanf("%s", nameE);
-				while (fread(&address_book, sizeof(address_book),1, fptr)==1)
-				{
-					if(!strcmp(nameE, &address_book))
-					{
-						printf("contact FOUND\nName    : %s\nPhone No: %s\nEmail Id: %s\n", nameE, &phoneE , &emailE);
-						counter++;
-					}
-				}
-				if (!counter)
-				{
-					printf("Contanct not found\n");
-					return -2;
-				}
-				else if (counter > 1)
-				{
-					printf("WARNING: contacts with either same NAME, PHONE NUMBER, or EMAIL ID found\n");
-				}
-				break;
-			case e_second_opt:
-				printf("Enter a phone number to search: ");
-				scanf("%s", phoneE);
-				while (fread(&address_book, sizeof(address_book), 1, fptr) == 1)
-				{
-					if(!strcmp(phoneE, &address_book))
-					{
-						printf("contact FOUND\nName    : %s\nPhone No: %s\nEmail Id: %s\n", nameE, &phoneE , &emailE);
-						counter++;
-					}
-				}
-				if (!counter)
-				{
-					printf("Contanct not found\n");
-					return -2;
-				}
-				else if (counter > 1)
-				{
-					printf("WARNING: contacts with either same NAME, PHONE NUMBER, or EMAIL ID found\n");
-				}
-				break;
-			case e_third_opt:
-				printf("Enter an Email ID to search: ");
-				scanf("%s", emailE);
-				while (fread(&address_book, sizeof(address_book), 1, fptr) == 1);
-				{
-					if(!strcmp(emailE, &address_book))
-					{
-						printf("contact FOUND\nName    : %s\nPhone No: %s\nEmail Id: %s\n", nameE, &phoneE , &emailE);
-						counter++;
-					}
-				}
-				if (!counter)
-				{
-					printf("Contanct not found\n");
-					return -2;
-				}
-				else if (counter > 1)
-				{
-					printf("WARNING: contacts with either same NAME, PHONE NUMBER, or EMAIL ID found\n");
-				}
-				break;
-			case e_fourth_opt:
-				printf("Enter an SI number to search: ");
-				scanf("%s", NUM);
-				while (fread(&address_book, sizeof(address_book), 1, fptr) == 1);
-				{
-					if(!strcmp(NUM, &address_book))
-					{
-						printf("contact FOUND\nName    : %s\nPhone No: %s\nEmail Id: %s\n", nameE, &phoneE , &emailE);
-						counter++;
-					}
-				}
-				if (!counter)
-				{
-					printf("Contanct not found\n");
-					return -2;
-				}
-				else if (counter > 1)
-				{
-					printf("WARNING: contacts with either same NAME, PHONE NUMBER, or EMAIL ID found\n");
-				}
-				break;
-			case e_fifth_opt:
-				printf("\nNow exiting search contact...");
-				return e_success;
-		}
-	} 
-	while (option != e_fifth_opt);
-	return e_success;
-	
+	ContactInfo *info = address_book->list;
+    FILE *fp;
+    char name[NAME_LEN];
+    char phoneNum[NUMBER_LEN];
+    char email[EMAIL_ID_LEN];
+
+    int size = address_book->count; //6
+    int indexArray[address_book->count];
+    int counter = 0;
+
+    int addressBookSize = sizeof(ContactInfo) * size; //6
+
+    int inputOption;
+    do {
+        contactMenu("Search Contact By:\n");
+
+
+        inputOption = get_option(NUM, "\nPlease select an option: ");
+
+        switch (inputOption) {
+        case 0:
+            return e_back;
+        case 1:
+            printf("Enter the name you want to search: ");
+            scanf("%s", name);
+
+            for(int index = 0; index < size; index++){
+                info = searchByName(&info[index], addressBookSize, name);
+                printf("%s", info);
+                if(info != NULL){
+                    indexArray[counter] = index;
+                    counter++;
+                } else {
+                    info = address_book->list;
+                }
+            }
+
+            if (counter == 0) {
+                printf("\n\nNot found");
+            } else {
+                printContacts(address_book, indexArray, counter);
+            }
+
+
+
+        }
+    } while ( inputOption != 0);
+
+
+    return e_success;	
 }
 
 Status edit_contact(AddressBook *address_book)
