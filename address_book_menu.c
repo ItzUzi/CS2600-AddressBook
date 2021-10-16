@@ -12,7 +12,7 @@ Status save_file(AddressBook *address_book);
 /**
  * Takes type of return data desired and custom message
  * Takes user input and returns desired input
-*/
+ */
 int get_option(int type, const char *msg)
 {
 	char option[10];
@@ -21,18 +21,21 @@ int get_option(int type, const char *msg)
 
 	// Displays message
 	printf("%s", msg);
-	if(type != 0)
+	if (type != 0)
 		scanf("%s", option);
 
-	if(type == 2){
+	if (type == 2)
+	{
 		result = (int)*option;
-		if(result != 'Y' && result != 'N')
+		if (result != 'Y' && result != 'N')
 			return get_option(type, msg);
-
-	}else if(type == 1){
+	}
+	else if (type == 1)
+	{
 		// Checks if value is of type int
 		result = strtol(option, &ptr, 10);
-		if(*ptr != '\0'){
+		if (*ptr != '\0')
+		{
 			printf("Enter a valid input.\n");
 			return get_option(type, msg);
 		}
@@ -67,11 +70,11 @@ Status save_prompt(AddressBook *address_book)
 
 Status list_contacts(AddressBook *address_book, const char *title, int *index, const char *msg, Modes mode)
 {
-	/* 
+	/*
 	 * Add code to list all the contacts availabe in address_book.csv file
 	 * Should be menu based
 	 * The menu provide navigation option if the entries increase the page size
-	 */ 
+	 */
 
 	return e_success;
 }
@@ -116,7 +119,7 @@ Status menu(AddressBook *address_book)
 
 		option = get_option(NUM, "");
 
-		if ((address_book-> count == 0) && (option != e_add_contact))
+		if ((address_book->count == 0) && (option != e_add_contact))
 		{
 			get_option(NONE, "No entries found!!. Would you like to add? Use Add Contacts");
 
@@ -125,33 +128,34 @@ Status menu(AddressBook *address_book)
 
 		switch (option)
 		{
-			case e_add_contact:
-				/* Add your implementation to call add_contacts function here */
-				break;
-			case e_search_contact:
-				search_contact(address_book);
-				break;
-			case e_edit_contact:
-				edit_contact(address_book);
-				break;
-			case e_delete_contact:
-				delete_contact(address_book);
-				break;
-			case e_list_contacts:
-				/* Add your implementation to call list_contacts function here */
-				break;
-			case e_save:
-				save_file(address_book);
-				break;
-			case e_exit:
-				break;
+		case e_add_contact:
+			/* Add your implementation to call add_contacts function here */
+			break;
+		case e_search_contact:
+			search_contact(address_book);
+			break;
+		case e_edit_contact:
+			edit_contact(address_book);
+			break;
+		case e_delete_contact:
+			delete_contact(address_book);
+			break;
+		case e_list_contacts:
+			/* Add your implementation to call list_contacts function here */
+			break;
+		case e_save:
+			save_file(address_book);
+			break;
+		case e_exit:
+			break;
 		}
 	} while (option != e_exit);
 
 	return e_success;
 }
 
-void contactMenu(const char *msg){
+void contactMenu(const char *msg)
+{
 
 	menu_header(msg);
 
@@ -175,55 +179,88 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 Status search_contact(AddressBook *address_book)
 {
 	ContactInfo *info = address_book->list;
-    FILE *fp;
-    char name[NAME_LEN];
-    char phoneNum[NUMBER_LEN];
-    char email[EMAIL_ID_LEN];
+	FILE *fp;
+	char name[NAME_LEN];
+	char phoneNum[NUMBER_LEN];
+	char email[EMAIL_ID_LEN];
 
-    int size = address_book->count; //6
-    int indexArray[address_book->count];
-    int counter = 0;
+	int size = address_book->count; // 6
+	int indexArray[address_book->count];
+	int counter = 0;
 
-    int addressBookSize = sizeof(ContactInfo) * size; //6
+	int addressBookSize = sizeof(ContactInfo) * size; // 6
 
-    int inputOption;
-    do {
-        contactMenu("Search Contact By:\n");
+	int inputOption;
+	do
+	{
+		contactMenu("Search Contact By:\n");
 
+		inputOption = get_option(NUM, "\nPlease select an option: ");
 
-        inputOption = get_option(NUM, "\nPlease select an option: ");
+		switch (inputOption)
+		{
+			case 0:
+				return e_back;
+			case 1:
+				printf("\nEnter the name you want to search: ");
+				scanf("%s", name);
 
-        switch (inputOption) {
-        case 0:
-            return e_back;
-        case 1:
-            printf("Enter the name you want to search: ");
-            scanf("%s", name);
+				for (int index = 0; index < size; index++)
+				{
+					info = searchByName(&info[index], addressBookSize, name);
+					printf("%s", info);
+					if (info != NULL)
+					{
+						indexArray[counter] = index;
+						counter++;
+					}
+					else
+					{
+						info = address_book->list;
+					}
+				}
+				if (counter == 0)
+				{
+					printf("\n\nNot found");
+				}
+				else
+				{
+					printContacts(address_book, indexArray, counter);
+				}
+				break;
 
-            for(int index = 0; index < size; index++){
-                info = searchByName(&info[index], addressBookSize, name);
-                printf("%s", info);
-                if(info != NULL){
-                    indexArray[counter] = index;
-                    counter++;
-                } else {
-                    info = address_book->list;
-                }
-            }
+			case 2:
+				printf("\nEnter the phone number you want to search: ");
+				scanf("%s", phoneNum);
+				for (int index = 0; index < size; index++)
+				{
+					info = searchByPhNum(&info[index], addressBookSize, phoneNum);
+					printf("%s", info);
+					if (info != NULL)
+					{
+						indexArray[counter] = index;
+						counter++;
+					}
+					else
+					{
+						info = address_book->list;
+					}
+				}
+				if (counter == 0)
+				{
+					printf("\n\nNot found");
+				}
+				else
+				{
+					printContacts(address_book, indexArray, counter);
+				}
+				break;
 
-            if (counter == 0) {
-                printf("\n\nNot found");
-            } else {
-                printContacts(address_book, indexArray, counter);
-            }
+		}
+	} 
+	while (inputOption != 0);
 
-
-
-        }
-    } while ( inputOption != 0);
-
-
-    return e_success;	
+	return e_success;
 }
 
 Status edit_contact(AddressBook *address_book)
@@ -235,27 +272,28 @@ Status delete_contact(AddressBook *address_book)
 {
 	int option;
 
-	do{
+	do
+	{
 		contactMenu("Delete by...");
 
 		option = get_option(NUM, "");
 
-		switch(option){
-			case e_first_opt:
-				break;
-			case e_second_opt:
-				break;
-			case e_third_opt:
-				break;
-			case e_fourth_opt:
-				break;
-			case e_fifth_opt:
-				printf("Now exiting delete_contact...");
-				return e_success;
+		switch (option)
+		{
+		case e_first_opt:
+			break;
+		case e_second_opt:
+			break;
+		case e_third_opt:
+			break;
+		case e_fourth_opt:
+			break;
+		case e_fifth_opt:
+			printf("Now exiting delete_contact...");
+			return e_success;
 		}
 
-	}while(option != e_fifth_opt);
+	} while (option != e_fifth_opt);
 
 	return e_success;
-
 }
