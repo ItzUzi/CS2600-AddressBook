@@ -339,6 +339,7 @@ Status search_contact(AddressBook *address_book)
 
 	int size = address_book->count; // 6
 	int indexArray[address_book->count];
+
 	int counter = 0;
 
 	int addressBookSize = sizeof(ContactInfo) * size; // 6
@@ -467,8 +468,8 @@ Status search_contact(AddressBook *address_book)
 
 		}
 	} 
-	while (inputOption != 0);
 
+	while (inputOption != 0);
 	return e_success;
 }
 
