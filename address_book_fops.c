@@ -33,14 +33,21 @@ Status load_file(AddressBook *address_book)
 
 Status save_file(AddressBook *address_book)
 {
+	char buffer[32];
 	/*
 	 * Write contacts back to file.
 	 * Re write the complete file currently
 	 */ 
 	address_book->fp = fopen(DEFAULT_FILE, "w");
 
+	while(fgets(buffer, 40, address_book->fp))
+	{
+		fprintf(address_book->fp,"hello%s,%s,%s\n", address_book->list->name, address_book->list->phone_numbers, address_book->list->email_addresses);
+	}
+
 	if (address_book->fp == NULL)
 	{
+		printf("Saving failed");
 		return e_fail;
 	}
 
