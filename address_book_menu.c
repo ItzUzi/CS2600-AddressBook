@@ -133,7 +133,7 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 {
 	printf("######### %s #######\n", title);
 	printf("%s", msg);
-
+	char option;
 	int size = address_book->count;
 	
 	int indexOfInfo;
@@ -146,7 +146,14 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 		printPHandEMAIL(address_book, indexOfInfo);
 		printf("Serial Number:   %d\n", ptr[indexOfInfo].si_no);
 		printf("**********************************\n");
+
+		option = get_option(CHAR, "Enter 'n' to exit (any other input lists next iteration): ");
+		if(option == 'n')
+			break;
 	}
+
+	if(option != 'n')
+		get_option(CHAR, "Enter any input to exit: ");
 
 	return e_success;
 }
@@ -154,8 +161,6 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 void menu_header(const char *str)
 {
 	fflush(stdout);
-
-	//system("cls");
 
 	printf("#######  Address Book  #######\n");
 	if (*str != '\0')
@@ -166,6 +171,7 @@ void menu_header(const char *str)
 
 void main_menu(void)
 {
+	system("cls");
 	menu_header("Features:\n");
 
 	printf("0. Exit\n");
@@ -181,11 +187,10 @@ void main_menu(void)
 
 void indexArray(AddressBook *address_book, int *array){
 	int count = address_book->count;
-	int size = count;
 
-	array = malloc(address_book->count * sizeof(int));
+	array = realloc(array, address_book->count * sizeof(int));
 
-	for(int i = 0; i < size; i++){
+	for(int i = 0; i < count; i++){
 		array[i] = i;
 		printf("array at %d is: %d\n", i, array[i]);
 		printf("Name is %s\n", address_book->list[i]);
@@ -220,7 +225,6 @@ Status menu(AddressBook *address_book)
 		{
 			case e_add_contact:
 				add_contacts(address_book);
-				//indexArray(address_book, count);
 				break;
 			case e_search_contact:
 				search_contact(address_book);
@@ -232,6 +236,7 @@ Status menu(AddressBook *address_book)
 				delete_contact(address_book);
 				break;
 			case e_list_contacts:
+				indexArray(address_book, count);
 				list_contacts(address_book, "Listing Contacts...", count, "", e_list);
 				break;
 			case e_save:
@@ -259,16 +264,27 @@ void contactMenu(const char *msg){
 
 Status add_contacts(AddressBook *address_book)
 {
+	system("cls");
 	ContactInfo *ptr;
-	int addressBookSize = sizeof(AddressBook) * (address_book->count + sizeof(int));
-	int count = address_book->count + 1;
-	ptr = realloc(ptr, count * (sizeof(ContactInfo)));
+	int count = address_book->count;
+	ptr = realloc(ptr, (count + 1) * (sizeof(ContactInfo)));
 	int option, si_num;
 	char input[32];
 	short phoneIndex = 0;
 	short emailIndex = 0;
 	short counter = 0;
-	contactMenu("add contact by..");\
+
+	// Initializes list elements
+	strcpy(address_book->list[count].name[0], "");
+	for(int i = 0; i < PHONE_NUMBER_COUNT; i++){
+		strcpy(address_book->list[count].phone_numbers[i], "");
+		strcpy(address_book->list[count].email_addresses[i], "");
+	}
+	
+	address_book->list[count].si_no = 0;
+	contactMenu("add contact by..");
+	
+
 	do
 	{	
 		option = get_option(NUM, "");
