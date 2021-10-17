@@ -582,7 +582,6 @@ void excludeContact(AddressBook *address_book, int index){
 Status delete_contact(AddressBook *address_book)
 {	
 	ContactInfo *ptr;
-	system("cls");
 	int option, siNum;
 	int size = address_book->count;
 	char input[32];
@@ -595,7 +594,6 @@ Status delete_contact(AddressBook *address_book)
 	option = get_option(NUM, "");
 	ContactInfo *matchPtr = address_book->list;
 		
-	system("cls");
 	switch(option){
 		case e_first_opt:
 			printf("Now exiting delete_contact...");

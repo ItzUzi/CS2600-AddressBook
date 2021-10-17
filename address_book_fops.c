@@ -35,6 +35,7 @@ Status load_file(AddressBook *address_book)
 			int si_num;
 			char check[500];
 			strcpy(check, strtok(temp, ","));
+
 			strcpy(address_book->list[index].name[0], check);
 
 			for(int i = 0; i < 11; i++){
@@ -66,30 +67,28 @@ Status load_file(AddressBook *address_book)
 
 Status save_file(AddressBook *address_book)
 {
-	char buffer[32];
-	/*
-	 * Write contacts back to file.
-	 * Re write the complete file currently
-	 */ 
-	address_book->fp = fopen(DEFAULT_FILE, "w");
+	FILE *fp = address_book->fp;
+	ContactInfo *ptr;
+	int counter = 0;
+	int count = address_book->count;
+	fp = fopen(DEFAULT_FILE, "w");
+	while(counter < count){
+		ptr = address_book->list;
+		fprintf(fp, "%s,", ptr[counter].name[0]);
 
-	while(fgets(buffer, 40, address_book->fp))
-	{
-		fprintf(address_book->fp,"hello%s,%s,%s\n", address_book->list->name, address_book->list->phone_numbers, address_book->list->email_addresses);
+		for(int i = 0; i < PHONE_NUMBER_COUNT; i++)
+			fprintf(fp,"%s,", ptr[counter].phone_numbers[i]);
+		for(int i = 0; i < EMAIL_ID_COUNT; i++)
+			fprintf(fp, "%s,", ptr[counter].email_addresses[i]);
+
+		fprintf(fp, "%d", ptr[counter].si_no);
+
+		if(counter != count - 1)
+			fprintf(fp, "\n");
+		counter++;
 	}
 
-	if (address_book->fp == NULL)
-	{
-		printf("Saving failed");
-		return e_fail;
-	}
-
-	/* 
-	 * Add the logic to save the file
-	 * Make sure to do error handling
-	 */ 
-
-	fclose(address_book->fp);
+	fclose(fp);
 
 	return e_success;
 }
