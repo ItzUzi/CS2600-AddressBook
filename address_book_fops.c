@@ -48,7 +48,6 @@ Status load_file(AddressBook *address_book)
 					address_book->list[index].si_no = si_num;
 				}
 			}
-			printf("Count is %d\n", count);
 			ptr = (ContactInfo*) realloc(ptr, ((count+sizeof(int)) * sizeof(ContactInfo)));
 			index++;
 		}
