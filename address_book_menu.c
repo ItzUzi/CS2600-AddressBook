@@ -356,9 +356,14 @@ Status search_contact(AddressBook *address_book)
 	int inputOption;
 	do
 	{
-		contactMenu("Search Contact By:\n");
+		printf("Search by ...\n");
+		printf("0. Exit\n");
+		printf("1. Name\n");
+		printf("2. Phonenumber\n");
+		printf("3. Email\n");
 
-		inputOption = get_option(NUM, "\nPlease select an option: ");
+
+		inputOption = get_option(NUM, "Please select an option: ");
 
 		switch (inputOption)
 		{
@@ -444,31 +449,7 @@ Status search_contact(AddressBook *address_book)
 					printContacts(address_book, indexArray, counter);
 				}
 				break;
-			case e_fifth_opt:
-				printf("Enter the Serial Number ID you want to search: ");
-				scanf("%d", siNum);
-				for (int index = 0; index < size; index++)
-				{
-					info = searchBySiNum(&info[index], addressBookSize, siNum);
-					printf("%s", info);
-					if (info != NULL)
-					{
-						indexArray[counter] = index;
-						counter++;
-					}
-					else
-					{
-						info = address_book->list;
-					}
-				}
-				if (counter == 0)
-				{
-					printf("\n\nNot found");
-				}
-				else
-				{
-					printContacts(address_book, indexArray, counter);
-				}
+			default:
 				break;
 
 
