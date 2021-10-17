@@ -40,6 +40,59 @@ int get_option(int type, const char *msg)
 	return result;
 }
 
+
+void static printPHandEMAIL(AddressBook *address_book, int index){
+	ContactInfo *ptr = address_book->list;
+	int counter = 0;
+	int check;
+	char str[32];
+	printf("PhoneNumbers:\n");
+	while(counter < PHONE_NUMBER_COUNT){
+		check = strcmp(ptr[index].phone_numbers[counter], "");
+		if(check != 0)
+			printf("                 %s\n", ptr[index].phone_numbers[counter]);
+		else
+			break;
+		counter++;
+	}
+	counter = 0;
+	printf("Email Addresses:\n");
+	while(counter < EMAIL_ID_COUNT){
+		check = strcmp(ptr[index].email_addresses[counter], "");
+		if(check != 0)
+			printf("                 %s\n", ptr[index].email_addresses[counter]);
+		else
+			break;
+		counter++;
+	}
+
+}
+
+void printContacts(AddressBook *address_book, int *indexes, int size){
+	//system("cls");
+	int index;
+	ContactInfo *ptr = address_book->list;
+	for(int i = 0; i < size; i++){
+		index = indexes[i];
+		printf("Contact #%d\n", i);
+		printf("**********************************\n");
+		printf("Name:            %s\n", ptr[index].name);
+		printPHandEMAIL(address_book, index);
+		printf("Serial Number:   %d\n", ptr[index].si_no);
+		printf("**********************************\n");
+	}
+}
+void printContact(AddressBook *address_book, int index){
+	system("cls");
+	ContactInfo *ptr = address_book->list;
+
+	printf("**********************************\n");
+	printf("Name:            %s\n", ptr[index].name);
+	printPHandEMAIL(address_book, index);
+	printf("Serial Number:   %d\n", ptr[index].si_no);
+	printf("**********************************\n");
+}
+
 void get_string(const char *type, char result[32]){
 	printf("Enter %s\n", type);
 	printf("(Only first 32 chars will be taken)\n");
@@ -80,53 +133,20 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 {
 	printf("######### %s #######\n", title);
 	printf("%s", msg);
-    for (int i=0; i<address_book->count;i++)
-    {
-        printf("Contact #%i (out of %i)\n", i+1, address_book->count);
-        printf("******************************\n");
-        printf("NAME: ");
-        printf("%s", address_book->list[i].name);
 
-        printf("\nPHONE NUMBERS: \n");
-        for(int j=0; j<PHONE_NUMBER_COUNT; j++)
-        {
-            if (strcmp(address_book->list[i].phone_numbers[j], "\0")==0 || address_book->list[i].phone_numbers[j] == NULL)
-            {
-                continue;
-            }else{
-                printf("\t%s\n", address_book->list[i].phone_numbers[j]);
-            }
-        }
-
-        printf("\nEMAIL ADDRESSES: \n");
-        for(int k=0; k<EMAIL_ID_COUNT; k++)
-        {
-            if (strcmp(address_book->list[i].email_addresses[k], "\0")==0 || address_book->list[i].phone_numbers[k] == NULL)
-            {
-                continue;
-            }else{
-                printf("\t%s\n", address_book->list[i].email_addresses[k]);
-            }
-        }
-
-        printf("\nsi_no: %i\n\n", address_book->list[i].si_no);
-        printf("******************************\n");
-
-		if(i == address_book->count - 1){
-			printf("Reached the end of the list\n\n");
-			break;
-		}else{
-        	int userInp = get_option(CHAR, "Continue looking through list? (Y/N): ");
-        	printf("\n");
-
-        	if (userInp == 'Y')
-        	{
-            	continue;
-        	}else if(userInp == 'N') {
-            	break;
-        	}
-		}
-    }
+	int size = address_book->count;
+	
+	int indexOfInfo;
+	ContactInfo *ptr = address_book->list;
+	for(int i = 0; i < size; i++){
+		indexOfInfo = index[i];
+		printf("Contact #%d\n", i);
+		printf("**********************************\n");
+		printf("Name:            %s\n", ptr[indexOfInfo].name);
+		printPHandEMAIL(address_book, indexOfInfo);
+		printf("Serial Number:   %d\n", ptr[indexOfInfo].si_no);
+		printf("**********************************\n");
+	}
 
 	return e_success;
 }
@@ -159,15 +179,32 @@ void main_menu(void)
 	printf("Please select an option: ");
 }
 
+void indexArray(AddressBook *address_book, int *array){
+	int count = address_book->count;
+	int size = count;
+
+	array = malloc(address_book->count * sizeof(int));
+
+	for(int i = 0; i < size; i++){
+		array[i] = i;
+		printf("array at %d is: %d\n", i, array[i]);
+		printf("Name is %s\n", address_book->list[i]);
+	}
+}
+
 Status menu(AddressBook *address_book)
 {
 	ContactInfo backup;
 	Status ret;
 	int option;
-
+	/*int *count = malloc((count, address_book->count * sizeof(int)));
+	printf("Address of count is %d\n", &count);
+	for(int i = 0; i < address_book->count; i++)
+		count[i] = i;
+	int index = address_book->count - 1;
+	*/
 	do
 	{
-		int *count;
 		main_menu();
 
 		option = get_option(NUM, "");
@@ -184,6 +221,7 @@ Status menu(AddressBook *address_book)
 		{
 			case e_add_contact:
 				add_contacts(address_book);
+				//indexArray(address_book, count);
 				break;
 			case e_search_contact:
 				search_contact(address_book);
@@ -195,9 +233,7 @@ Status menu(AddressBook *address_book)
 				delete_contact(address_book);
 				break;
 			case e_list_contacts:
-				for(int i = 0; i < address_book->count < i; i++)
-					count[i] = i;
-				list_contacts(address_book, "Listing Contacts...", count, "Checking count", e_list);
+				//list_contacts(address_book, "Listing Contacts...", count, "", e_list);
 				break;
 			case e_save:
 				save_file(address_book);
@@ -221,61 +257,9 @@ void contactMenu(const char *msg){
 	printf("4. Serial Number\n");
 }
 
-void static printPHandEMAIL(AddressBook *address_book, int index){
-	ContactInfo *ptr = address_book->list;
-	int counter = 0;
-	int check;
-	char str[32];
-	printf("PhoneNumbers:\n");
-	while(counter < PHONE_NUMBER_COUNT){
-		check = strcmp(ptr[index].phone_numbers[counter], "");
-		if(check != 0)
-			printf("                 %s\n", ptr[index].phone_numbers[counter]);
-		else
-			break;
-		counter++;
-	}
-	counter = 0;
-	printf("Email Addresses:\n");
-	while(counter < EMAIL_ID_COUNT){
-		check = strcmp(ptr[index].email_addresses[counter], "");
-		if(check != 0)
-			printf("                 %s\n", ptr[index].email_addresses[counter]);
-		else
-			break;
-		counter++;
-	}
-
-}
-
-void printContacts(AddressBook *address_book, int *indexes, int size){
-	system("cls");
-	int index;
-	ContactInfo *ptr = address_book->list;
-	for(int i = 0; i < size; i++){
-		index = indexes[i];
-		printf("Contact #%d\n", i);
-		printf("**********************************\n");
-		printf("Name:            %s\n", ptr[index].name);
-		printPHandEMAIL(address_book, index);
-		printf("Serial Number:   %d\n", ptr[index].si_no);
-		printf("**********************************\n");
-	}
-}
-void printContact(AddressBook *address_book, int index){
-	system("cls");
-	ContactInfo *ptr = address_book->list;
-
-	printf("**********************************\n");
-	printf("Name:            %s\n", ptr[index].name);
-	printPHandEMAIL(address_book, index);
-	printf("Serial Number:   %d\n", ptr[index].si_no);
-	printf("**********************************\n");
-}
 
 Status add_contacts(AddressBook *address_book)
 {
-	system("cls");
 	ContactInfo *ptr;
 	int addressBookSize = sizeof(ContactInfo) * address_book->count;
 	int count = address_book->count;
