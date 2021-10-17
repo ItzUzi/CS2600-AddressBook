@@ -197,12 +197,11 @@ Status menu(AddressBook *address_book)
 	ContactInfo backup;
 	Status ret;
 	int option;
-	/*int *count = malloc((count, address_book->count * sizeof(int)));
-	printf("Address of count is %d\n", &count);
+	int *count = calloc(address_book->count, sizeof(int));
 	for(int i = 0; i < address_book->count; i++)
 		count[i] = i;
 	int index = address_book->count - 1;
-	*/
+	
 	do
 	{
 		main_menu();
@@ -233,7 +232,7 @@ Status menu(AddressBook *address_book)
 				delete_contact(address_book);
 				break;
 			case e_list_contacts:
-				//list_contacts(address_book, "Listing Contacts...", count, "", e_list);
+				list_contacts(address_book, "Listing Contacts...", count, "", e_list);
 				break;
 			case e_save:
 				save_file(address_book);
@@ -261,18 +260,15 @@ void contactMenu(const char *msg){
 Status add_contacts(AddressBook *address_book)
 {
 	ContactInfo *ptr;
-	int addressBookSize = sizeof(ContactInfo) * address_book->count;
-	int count = address_book->count;
-	ptr = (ContactInfo*) realloc(ptr, (count + sizeof(int)) * sizeof(ContactInfo));
+	int addressBookSize = sizeof(AddressBook) * (address_book->count + sizeof(int));
+	int count = address_book->count + 1;
+	ptr = realloc(ptr, count * (sizeof(ContactInfo)));
 	int option, si_num;
 	char input[32];
-	int phoneIndex = 0;
-	int emailIndex = 0;
-	address_book->list = ptr;
-	int check = 0;
-	
-	contactMenu("add contact by..");
-
+	short phoneIndex = 0;
+	short emailIndex = 0;
+	short counter = 0;
+	contactMenu("add contact by..");\
 	do
 	{	
 		option = get_option(NUM, "");
@@ -306,7 +302,7 @@ Status add_contacts(AddressBook *address_book)
 		}
 		
 		if(option != e_first_opt){
-			check = 1;
+			counter ++;
 			printContact(address_book, count);
 			contactMenu("select an option");
 		}
@@ -314,7 +310,8 @@ Status add_contacts(AddressBook *address_book)
 	} while (option != e_first_opt);
 
 	free(ptr);
-	address_book->count ++;
+	if(counter != 0)
+		address_book->count ++;
 	return e_success;
 }
 
