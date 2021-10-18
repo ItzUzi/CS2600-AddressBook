@@ -9,7 +9,7 @@
 int main(int argc, char const *argv[])
 {
     AddressBook addBook;
-
+    load_file(&addBook);
     int size = 100;
     ContactInfo contArray[3];
     addBook.list = contArray;

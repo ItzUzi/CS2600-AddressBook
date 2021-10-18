@@ -9,6 +9,8 @@
 int main(void)
 {
 	AddressBook address_book;
+	ContactInfo cont[1000];
+	address_book.list = cont;
 	Status ret;
 
 	/* Load the file from .csv file if any */
