@@ -9,6 +9,55 @@
 
 extern Status save_file(AddressBook *address_book);
 
+int get_option(int type, const char *msg)
+{
+	char option[32];
+	char *ptr;
+	int result = 0;
+
+	// Displays message
+	printf("%s", msg);
+	if(type != NONE)
+		scanf("%s", option);
+
+	if(type == CHAR){
+		result = (int)*option;
+	}else if(type == NUM){
+		// Checks if value is of type int
+		result = strtol(option, &ptr, 10);
+		if(*ptr != '\0'){
+			printf("Enter a valid input.\n");
+			return get_option(type, msg);
+		}
+	}
+
+	return result;
+}
+
+static ContactInfo* searchAddressBook(ContactInfo *ptr, int bookSize, const void *targetPtr, int limit, int (*functionPtr)(const void *, ContactInfo*, int)){
+
+
+    int counter = 0;
+    do{
+        if((*functionPtr)(targetPtr, ptr, counter) == 0)
+            return (ContactInfo*) ptr;
+        else
+            counter++;
+    }while(counter < limit);
+     return NULL;
+
+ }
+
+static int compareSiNum(const void *targetPtr, ContactInfo *tableValuePtr, int index){
+    return * (int *) targetPtr != tableValuePtr ->si_no;
+}
+
+ContactInfo* searchBySiNum(ContactInfo *ptr, int size, int siNum){
+    return searchAddressBook(ptr, size, &siNum, 0, compareSiNum);
+}
+
+
+
 int edit_contact(AddressBook *address_book)
 {
     char *nameE;
@@ -83,28 +132,7 @@ int edit_contact(AddressBook *address_book)
 
     } while (exit != 0);
 
-	return e_success;
+    return e_success;
 
 }
 
-static ContactInfo* searchAddressBook(ContactInfo *ptr, int bookSize, const void *targetPtr, int limit, int (*functionPtr)(const void *, ContactInfo*, int)){
-
-
-    int counter = 0;
-    do{
-        if((*functionPtr)(targetPtr, ptr, counter) == 0)
-            return (ContactInfo*) ptr;
-        else
-            counter++;
-    }while(counter < limit);
-     return NULL;
-
- }
-
-static int compareSiNum(const void *targetPtr, ContactInfo *tableValuePtr, int index){
-    return * (int *) targetPtr != tableValuePtr ->si_no;
-}
-
-ContactInfo* searchBySiNum(ContactInfo *ptr, int size, int siNum){
-    return searchAddressBook(ptr, size, &siNum, 0, compareSiNum);
-}

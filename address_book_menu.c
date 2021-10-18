@@ -378,7 +378,44 @@ Status add_contacts(AddressBook *address_book)
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
 {
-	/* Add the functionality for adding contacts here */
+	int number[50];
+	int length = 0;
+
+	switch (field)
+	{
+		case 0:
+			for (int i = 0; i < loop_count; i++) {
+				if (strcmp(str, address_book->list[i].name[0]) == 0) {
+					number[length] = address_book->list[i].si_no;
+					length++;
+				}
+			}
+			break;
+		case 1:
+			for (int i = 0; i < loop_count; i++) {
+				for (int j = 0; j < PHONE_NUMBER_COUNT; j++) {
+					if (strcmp(str, address_book->list[i].phone_numbers[j]) == 0) {
+						number[length] = address_book->list[i].si_no;
+						length++;
+					}
+				}
+			}
+			break;
+		case 2:
+			for (int i = 0; i < loop_count; i++) {
+				for (int j = 0; j < EMAIL_ID_COUNT; j++) {
+					if (strcmp(str, address_book->list[i].email_addresses[j]) == 0) {
+						number[length] = address_book->list[i].si_no;
+						length++;
+					}
+				}
+			}
+			break;
+		default:
+			break;
+	}
+	list_contacts(address_book, "Search Result:", number, "", mode);
+	return e_success;
 }
 
 Status search_contact(AddressBook *address_book)
@@ -425,6 +462,10 @@ Status search_contact(AddressBook *address_book)
 					{
 						indexArray[counter] = index;
 						counter++;
+					}
+					else
+					{
+						info = address_book->list;
 					}
 					else
 					{
