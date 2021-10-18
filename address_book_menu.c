@@ -467,10 +467,6 @@ Status search_contact(AddressBook *address_book)
 					{
 						info = address_book->list;
 					}
-					else
-					{
-						info = address_book->list;
-					}
 				}
 				if (counter == 0)
 				{
